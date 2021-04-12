@@ -1,0 +1,22 @@
+.navigation {
+    display: flex;
+    flex-direction: row;
+    padding-left: 5vw;
+    align-items: center;
+
+    h3{
+        padding-right: 40px;
+        color: white;
+    }
+}
+
+
+.header {
+    background: linear-gradient(90.06deg, #0099FF 0.05%, #00D1FF 99.94%);
+    height: 10vh;
+    width: 100vw;
+    display: flex;
+    flex-direction: row;
+    position: fixed;
+    top: 0;
+}

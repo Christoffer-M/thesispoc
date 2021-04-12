@@ -1,23 +1,22 @@
-import logo from './logo.svg';
-import './App.css';
+import * as firebaseDB from "./database/firebaseDB";
+import React, { useState, useEffect } from "react";
+import "./App.scss";
+import Header from "./components/Header";
 
 function App() {
+  useEffect(async () => {
+    const employees = await firebaseDB.getEmployees();
+
+    console.log(employees);
+
+    employees.forEach((element) => {
+      console.log(element.name);
+    });
+  }, []);
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <Header />
     </div>
   );
 }
