@@ -1,22 +1,23 @@
-import * as firebaseDB from "./database/firebaseDB";
-import React, { useState, useEffect } from "react";
-import "./App.scss";
-import Header from "./components/Header";
+import React, { useEffect } from "react";
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  useLocation,
+} from "react-router-dom";
+import Header from "./components/Header/Header";
+import Dashboard from "./Pages/Dashboard/Dashboard";
+import Login from "./Pages/Login/Login";
 
 function App() {
-  useEffect(async () => {
-    const employees = await firebaseDB.getEmployees();
-
-    console.log(employees);
-
-    employees.forEach((element) => {
-      console.log(element.name);
-    });
-  }, []);
-
+  console.log(useLocation().pathname);
   return (
-    <div className="App">
-      <Header />
+    <div className="app">
+      {useLocation().pathname !== "/" && <Header />}
+      <Switch>
+        <Route exact path="/" component={Login}></Route>
+        <Route exact path="/Dashboard" component={Dashboard}></Route>
+      </Switch>
     </div>
   );
 }
