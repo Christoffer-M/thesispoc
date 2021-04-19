@@ -25,9 +25,23 @@
 .tasks {
   text-align: left;
   padding-top: 10px;
+  .taskHeader {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    img {
+      margin-right: 20px;
+      border-radius: 90px;
+      border: 2px solid #185a9d ;
+    }
+  }
 }
 
 .team {
   text-align: left;
   padding-top: 10px;
+  .teamMembers {
+    display: flex;
+    flex-direction: row;
+  }
 }

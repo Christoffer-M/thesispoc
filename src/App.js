@@ -1,19 +1,16 @@
-import React, { useEffect } from "react";
-import {
-  BrowserRouter as Router,
-  Switch,
-  Route,
-  useLocation,
-} from "react-router-dom";
+import React, { useState } from "react";
+import * as DB from "./database/firebaseDB";
+import { Switch, Route, useLocation } from "react-router-dom";
 import Header from "./components/Header/Header";
 import Dashboard from "./Pages/Dashboard/Dashboard";
 import Login from "./Pages/Login/Login";
 
 function App() {
-  console.log(useLocation().pathname);
+  const currentPath = useLocation().pathname;
+
   return (
     <div className="app">
-      {useLocation().pathname !== "/" && <Header />}
+      {currentPath !== "/" && <Header />}
       <Switch>
         <Route exact path="/" component={Login}></Route>
         <Route exact path="/Dashboard" component={Dashboard}></Route>

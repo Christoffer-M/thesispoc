@@ -1,6 +1,6 @@
 import firebase from "firebase/app";
+import "firebase/auth";
 import "firebase/firestore";
-import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCijJugovDjBgNJSQKUgGXglQjsVMxnNpI",
@@ -21,23 +21,14 @@ if (!firebase.apps.length) {
 const db = firebase.firestore();
 
 export async function googleLogin() {
-  console.log("Why hello there");
-
+  console.log("running 1");
   const provider = new firebase.auth.GoogleAuthProvider();
-
+  console.log("running 2");
   const res = await firebase
     .auth()
     .signInWithPopup(provider)
-    .then((result) => {
-      /** @type {firebase.auth.OAuthCredential} */
-      var credential = result.credential;
-      // This gives you a Google Access Token. You can use it to access the Google API.
-      var token = credential.accessToken;
-      // The signed-in user info.
-      var user = result.user;
-      // ...
-
-      return [{ result: "success", userObject: user }];
+    .then(() => {
+      return "success";
     })
     .catch((error) => {
       return [{ result: "error", message: error.message, code: error.code }];
@@ -60,6 +51,37 @@ export async function getTasks() {
     .collection("tasks")
     .get()
     .then((ref) => {
-      return ref.docs.map((doc) => doc.data());
+      return ref.docs.map((doc) => {
+        console.log("returning tasks");
+        return doc.data();
+      });
     });
+}
+
+export async function getTask(id) {
+  return await db
+    .collection("tasks")
+    .doc(id)
+    .get("server")
+    .then((doc) => {
+      console.log("returning data ");
+      return doc.data();
+    });
+}
+
+export async function logout() {
+  return await firebase
+    .auth()
+    .signOut()
+    .then(() => {
+      return true;
+    })
+    .catch((error) => {
+      console.error(error);
+      return false;
+    });
+}
+
+export function getUser() {
+  return firebase.auth().currentUser;
 }
