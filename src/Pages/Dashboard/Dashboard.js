@@ -6,6 +6,7 @@ import Task from "../../components/Task/Task";
 import { Redirect } from "react-router";
 import Loading from "../Loading/Loading";
 import Employee from "../../components/Employee/Employee";
+import TaskModal from "../../components/TaskModal/TaskModal";
 
 const Dashboard = () => {
   const [tasks, setTasks] = useState([]);
@@ -40,7 +41,7 @@ const Dashboard = () => {
 
   async function fillUserTasks() {
     console.log("Filling user Tasks");
-    await firebaseDB.getTasks().then((res) => {
+    await firebaseDB.getUserTasks().then((res) => {
       setTasks(res);
     });
     console.log("Done Filling user Tasks");
@@ -52,9 +53,10 @@ const Dashboard = () => {
       const currentTeam = [];
 
       for (const emp of res) {
-        const currentTaskID = emp.currentTask.trim();
+        const currentTaskID = emp.data.currentTask.trim();
         await firebaseDB.getTask(currentTaskID).then((res) => {
-          currentTeam.push({ employee: emp, currentTask: res });
+          console.log(res);
+          currentTeam.push({ employee: emp.data, currentTask: res });
           console.log("pushing team");
         });
       }
@@ -74,8 +76,9 @@ const Dashboard = () => {
       <div className="container">
         <div className="tasks">
           <div className="taskHeader">
-            <img src={userImage}></img>
+            <img className="userImage" src={userImage}></img>
             <h2 className="mainHeadline"> Your Tasks</h2>
+            <TaskModal />
           </div>
 
           <div className="mainBarContainer">
@@ -97,10 +100,9 @@ const Dashboard = () => {
                 console.log(idx);
                 return (
                   <Employee
-                    name={item.employee.name}
+                    employee={item.employee}
                     key={idx}
-                    currentWork={item.currentTask.description}
-                    advice={item.currentTask.progress}
+                    task={item.currentTask}
                   />
                 );
               }

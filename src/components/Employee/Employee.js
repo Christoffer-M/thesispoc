@@ -1,11 +1,71 @@
 import "./Employee.scss";
+import ProgressBar from "../Progress-Bar/Progress-Bar";
+import { useEffect, useState } from "react";
+import MailIcon from "../../assets/icons/MailIcon.png";
+import messageIcon from "../../assets/icons/MessageIcon.png";
+import phoneIcon from "../../assets/icons/phoneIcon.png";
 
 const Employee = (props) => {
+  const [helpNeeded, setHelp] = useState("no");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+
+  const emp = {
+    name: props.employee.name,
+    imageURL: props.employee.imageURL,
+    phone: props.employee.phone,
+    title: props.employee.title,
+    email: props.employee.email,
+  };
+
+  const task = {
+    description: props.task.description,
+    progress: props.task.progress,
+  };
+
+  useEffect(() => {
+    if (props.task.helpneeded) {
+      setHelp("Yes");
+    }
+
+    if (emp.email) {
+      setEmail("mailto: " + emp.email);
+    }
+
+    if (emp.phone) {
+      setPhone("tel: " + emp.phone);
+    }
+  }, []);
+
   return (
     <div className="mainEmployee">
-      <h2>{props.name}</h2>
-      <p>{props.currentWork}</p>
-      <p>{props.advice}</p>
+      <div className="employeeData">
+        <div className="employeeHeader">
+          <a className="contactLink" href={email}>
+            <img src={MailIcon} />
+          </a>
+          <a className="contactLink">
+            <img src={messageIcon} />
+          </a>
+          <a className="contactLink" href={phone}>
+            <img src={phoneIcon} />
+          </a>
+        </div>
+        <div className="employeeMeta">
+          <img src={emp.imageURL} />
+          <h2>{emp.name}</h2>
+        </div>
+        <div className="currentWork">
+          <h3>Currently working on:</h3>
+          <p>{task.description}</p>
+          <h3>Progress:</h3>
+          <ProgressBar completed={task.progress} />
+        </div>
+        <div className="helpNeeded">
+          <h3>Looking for advice</h3>
+          <p>{helpNeeded}</p>
+        </div>
+      </div>
     </div>
   );
 };

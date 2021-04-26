@@ -42,19 +42,28 @@ export async function getEmployees() {
     .collection("employee")
     .get()
     .then((ref) => {
-      return ref.docs.map((doc) => doc.data());
+      console.log(ref.docs);
+      return ref.docs.map((doc) => {
+        return { id: doc.id, data: doc.data() };
+      });
     });
 }
 
-export async function getTasks() {
+export async function getEmployee(id) {}
+
+export async function getUserTasks() {
   return await db
     .collection("tasks")
     .get()
     .then((ref) => {
-      return ref.docs.map((doc) => {
+      let arr = [];
+      ref.docs.forEach((doc) => {
         console.log("returning tasks");
-        return doc.data();
+        if (doc.data().assigned !== undefined) {
+          arr.push(doc.data());
+        }
       });
+      return arr;
     });
 }
 
@@ -84,4 +93,22 @@ export async function logout() {
 
 export function getUser() {
   return firebase.auth().currentUser;
+}
+
+export function addTask(description, helpneeded, name, assigned) {
+  db.collection("tasks")
+    .doc()
+    .set({
+      description: description,
+      helpneeded: helpneeded,
+      name: name,
+      assigned: assigned,
+      progress: 0,
+    })
+    .then(() => {
+      console.log("Document successfully written!");
+    })
+    .catch((error) => {
+      console.error("Error writing document: ", error);
+    });
 }

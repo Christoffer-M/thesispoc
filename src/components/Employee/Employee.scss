@@ -1,5 +1,60 @@
 .mainEmployee {
     display: flex;
-    flex-direction: column;
-    padding: 20px;
+    flex: 0.5;
+    height: auto;
+    padding: 15px 35px;
+    margin-right: 20px;
+    box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.25);
+    border-radius: 30px;
+
+    .employeeHeader {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+        padding: 15px 0px;
+        
+    }
+
+    .employeeData {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: flex-start;
+        flex: 1;
+        .employeeMeta {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: flex-start;
+            width: 100%;
+            margin-bottom: 20px;
+        
+            img {
+                object-fit: cover;
+                height: 125px;
+                width: 125px;
+                border-radius: 90px;
+                margin-right: 20px;
+                border: 1px solid black;
+
+            }
+        
+        }
+    
+        .currentWork {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+    
+            p {
+                margin-top: 0px;
+            }
+            h3 {
+                margin-top: 0px;
+            }
+        }
+    }
+
 }
+
