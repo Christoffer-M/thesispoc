@@ -1,17 +1,20 @@
 import "./Header.scss";
 import * as DB from "../../database/firebaseDB";
-import { Link, Redirect } from "react-router-dom";
-import { useState } from "react";
+import { Redirect, NavLink, Link } from "react-router-dom";
+import { useState, useEffect } from "react";
 
 const Header = () => {
   const [islogout, setLogout] = useState(false);
+  const [userImage, setImage] = useState("");
+  const [showDropDown, setDropDown] = useState(false);
 
   const headers = [
     { name: "Dashboard", path: "/Dashboard" },
-    { name: "Your Work", path: "/work" },
+    { name: "Your Work", path: "/Work" },
     { name: "Your Team", path: "/team" },
-    { name: "Log Out" },
   ];
+
+  const dropDownOptions = [{ name: "Log Out" }];
 
   const logout = async () => {
     await DB.logout().then((res) => {
@@ -21,28 +24,65 @@ const Header = () => {
     });
   };
 
+  useEffect(() => {
+    console.log("Looping");
+    setTimeout(() => {
+      if (DB.getUser() !== null) {
+        console.log("Setting USER!");
+        setImage(DB.getUser().photoURL);
+      } else {
+        console.log("Trying agian in 1 second");
+      }
+    }, 1000);
+  }, []);
+
   return (
     <header className="header">
       <nav>
         <ul className="navigation">
           {headers.map((ref, idx) => {
-            if (ref.name === "Log Out") {
-              return (
-                <li key={idx} onClick={logout}>
-                  <a>{ref.name}</a>
-                  {islogout && <Redirect to={{ pathname: "/" }} />}
-                </li>
-              );
-            } else {
-              return (
-                <li key={idx}>
-                  <Link to={ref.path}>{ref.name}</Link>
-                </li>
-              );
-            }
+            return (
+              <li key={idx}>
+                <NavLink to={ref.path} activeClassName="selected">
+                  {ref.name}
+                </NavLink>
+              </li>
+            );
           })}
         </ul>
+        <img
+          src={userImage}
+          class="userImage"
+          onClick={() => {
+            console.log("setting drop down");
+            setDropDown(!showDropDown);
+            console.log(showDropDown);
+          }}
+        ></img>
       </nav>
+      {showDropDown && (
+        <div class="userOptions_Container">
+          <ul>
+            {dropDownOptions.map((val, idx) => {
+              if (val.name === "Log Out") {
+                console.log("HI THERE");
+                return (
+                  <li key={idx} onClick={logout}>
+                    <a>{val.name}</a>
+                    {islogout && <Redirect to={{ pathname: "/" }} />}
+                  </li>
+                );
+              } else {
+                return (
+                  <li key={idx}>
+                    <Link to={val.path}>{val.name}</Link>
+                  </li>
+                );
+              }
+            })}
+          </ul>
+        </div>
+      )}
     </header>
   );
 };

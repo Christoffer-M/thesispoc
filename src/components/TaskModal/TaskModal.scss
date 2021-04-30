@@ -9,8 +9,6 @@ $color:   rgba(222, 98, 98, 1);
         transform: scale(130%);
     }
   }
-
-
   
   .modalClass {
     position: absolute;
@@ -63,6 +61,7 @@ $color:   rgba(222, 98, 98, 1);
             font-size: 16px;
             outline: 0;
         }
+
         .dropDown {
             background: white;
             color: black;
@@ -79,17 +78,15 @@ $color:   rgba(222, 98, 98, 1);
                 position: relative;
                 z-index: 4;
             }
+
             .Dropdown-placeholder {
                 padding: 10px;
+
             }
+
             &:active{
                 transition: 0.3s;
             }
-
-            &.is-open {
-
-            }
-
 
             .menuClass {
                 position: absolute;
@@ -123,7 +120,7 @@ $color:   rgba(222, 98, 98, 1);
                     
     
                     &:hover {
-                        border-bottom: 1px solid black;
+                        background-color: lightcyan;
                         transition: 0.3s;
                     }
                 }
@@ -160,10 +157,8 @@ $color:   rgba(222, 98, 98, 1);
             z-index: 1;
             border: transparent;
             cursor: pointer;
-            //background:linear-gradient(180deg, rgba(222, 98, 98, 1)0%, rgba(255, 184, 140, 1)  100%) ;
-            //background: rgba(222, 98, 98, 1);
-
             transition: 0.5s;
+
             &:after {
                 content: '';
                 position: absolute;
@@ -175,6 +170,7 @@ $color:   rgba(222, 98, 98, 1);
                 border-radius: 10rem;
                 z-index: -2;
               }
+
               &:before {
                 content: '';
                 position: absolute;
@@ -187,6 +183,7 @@ $color:   rgba(222, 98, 98, 1);
                 border-radius: 10rem;
                 z-index: -1;
               }
+
               &:hover {
                 color: #fff;
                 &:before {
@@ -194,6 +191,7 @@ $color:   rgba(222, 98, 98, 1);
                 }
               }
         }
+
         .helpInputs {
             display: flex;
             align-items: center;
@@ -209,6 +207,11 @@ $color:   rgba(222, 98, 98, 1);
                     
                 }
             }
+        }
+
+        .errorText {
+            align-self: center;
+            color:black;
         }
 
     }

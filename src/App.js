@@ -1,9 +1,10 @@
-import React, { useState } from "react";
-import * as DB from "./database/firebaseDB";
+import "./app.scss";
+import React from "react";
 import { Switch, Route, useLocation } from "react-router-dom";
 import Header from "./components/Header/Header";
 import Dashboard from "./Pages/Dashboard/Dashboard";
 import Login from "./Pages/Login/Login";
+import YourWork from "./Pages/YourWork/YourWork";
 
 function App() {
   const currentPath = useLocation().pathname;
@@ -13,7 +14,10 @@ function App() {
       {currentPath !== "/" && <Header />}
       <Switch>
         <Route exact path="/" component={Login}></Route>
-        <Route exact path="/Dashboard" component={Dashboard}></Route>
+        <div className="container">
+          <Route exact path="/Dashboard" component={Dashboard}></Route>
+          <Route exact path="/Work" component={YourWork}></Route>
+        </div>
       </Switch>
     </div>
   );

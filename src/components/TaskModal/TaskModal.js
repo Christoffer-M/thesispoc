@@ -7,10 +7,12 @@ import * as firebaseDB from "../../database/firebaseDB";
 import Dropdown from "react-dropdown";
 import ClipLoader from "react-spinners/ClipLoader";
 
-const TaskModal = () => {
+const TaskModal = ({ reloadTasks }) => {
   const [modalIsOpen, setIsOpen] = useState(false);
   const [employees, setEmployees] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [errorText, setErrorText] = useState("");
+  let taskAssigned = firebaseDB.getUser().uid;
 
   function afterOpenModal() {
     // references are now sync'd and can be accessed.
@@ -18,6 +20,7 @@ const TaskModal = () => {
   }
 
   function closeModal() {
+    setErrorText("");
     setIsOpen(false);
   }
 
@@ -30,20 +33,43 @@ const TaskModal = () => {
 
     firebaseDB.getEmployees().then((res) => {
       const arr = [];
-      arr.push("Me");
+      const currentUserID = firebaseDB.getUser().uid;
+      arr.push({ value: currentUserID, label: "Me" });
       for (const emp of res) {
-        arr.push(emp.data.name);
+        arr.push({ value: emp.id, label: emp.data.name });
       }
       setEmployees(arr);
     });
   }, []);
 
-  function createTask() {
+  async function createTask() {
     setLoading(true);
     const taskName = document.getElementById("taskName").value;
     const taskDescription = document.getElementById("taskDescription").value;
-    const taskAssigned = document.getElementById;
-    console.log(taskName);
+    let helpNeeded;
+
+    console.log(taskAssigned);
+
+    const progress = Math.floor(Math.random() * 101);
+
+    document.getElementsByName("helpNeeded").forEach((res) => {
+      if (res.checked) {
+        helpNeeded = res.value === "true";
+      }
+    });
+
+    firebaseDB
+      .addTask(taskName, taskDescription, helpNeeded, taskAssigned, progress)
+      .then(async () => {
+        console.log("Task successfully Added!");
+        closeModal();
+        await reloadTasks();
+      })
+      .catch((err) => {
+        console.log(err.toString());
+        setErrorText(err.toString());
+      });
+
     setLoading(false);
   }
 
@@ -77,6 +103,9 @@ const TaskModal = () => {
           <input placeholder="Task Description" id="taskDescription" />
           <label>Task Assignee *</label>
           <Dropdown
+            onChange={(res) => {
+              taskAssigned = res.value;
+            }}
             options={employees}
             placeholder="Select an option"
             className="dropDown"
@@ -87,10 +116,10 @@ const TaskModal = () => {
             <label>Would you like help with this task? *</label>
             <div className="radioButtons">
               <div className="radioButton">
-                <input type="radio" name="helpNeeded" value="Yes" /> Yes
+                <input type="radio" name="helpNeeded" value="true" /> Yes
               </div>
               <div className="radioButton">
-                <input type="radio" name="helpNeeded" value="No" /> No
+                <input type="radio" name="helpNeeded" value="false" /> No
               </div>
             </div>
           </div>
@@ -103,6 +132,7 @@ const TaskModal = () => {
               <ClipLoader size={12} color="#fff" />
             </button>
           )}
+          {errorText !== "" && <p className="errorText">{errorText}</p>}
         </form>
       </Modal>
     </>

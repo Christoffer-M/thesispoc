@@ -15,6 +15,7 @@ const Login = () => {
   useEffect(() => {
     firebase.auth().onAuthStateChanged((user) => {
       if (user) {
+        DB.setUser(user);
         setRedirect(true);
       }
     });
@@ -22,7 +23,6 @@ const Login = () => {
 
   async function login() {
     setLoading((currentIsLoaded) => !currentIsLoaded);
-
     await DB.googleLogin().then((res) => {
       if (res === "success") {
         console.log("Success");
@@ -42,7 +42,14 @@ const Login = () => {
       <div className="content">
         <h1>Welcome to Overview</h1>
         <p>Please click the link below to log in with your google account</p>
-        {!loading && <img className="googleButton" src={pic} onClick={login} />}
+        {!loading && (
+          <img
+            className="googleButton"
+            src={pic}
+            onClick={login}
+            alt="GoogleButton"
+          />
+        )}
         {redirect && <Redirect to={{ pathname: "/Dashboard" }} />}
         <BounceLoader color={"#ffffff"} loading={loading} />
         {errorMessage !== "" && (

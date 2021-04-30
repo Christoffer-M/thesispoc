@@ -21,13 +21,14 @@ if (!firebase.apps.length) {
 const db = firebase.firestore();
 
 export async function googleLogin() {
-  console.log("running 1");
   const provider = new firebase.auth.GoogleAuthProvider();
-  console.log("running 2");
   const res = await firebase
     .auth()
     .signInWithPopup(provider)
-    .then(() => {
+    .then((res) => {
+      // const storage = firebase.storage();
+      // const imageReference = storage.refFromURL(res.user.photoURL);
+      // console.log(imageReference);
       return "success";
     })
     .catch((error) => {
@@ -59,11 +60,14 @@ export async function getUserTasks() {
       let arr = [];
       ref.docs.forEach((doc) => {
         console.log("returning tasks");
-        if (doc.data().assigned !== undefined) {
+        if (doc.data().assigned === getUser().uid) {
           arr.push(doc.data());
         }
       });
       return arr;
+    })
+    .catch((err) => {
+      console.error(err);
     });
 }
 
@@ -95,20 +99,43 @@ export function getUser() {
   return firebase.auth().currentUser;
 }
 
-export function addTask(description, helpneeded, name, assigned) {
-  db.collection("tasks")
-    .doc()
-    .set({
-      description: description,
-      helpneeded: helpneeded,
-      name: name,
-      assigned: assigned,
-      progress: 0,
-    })
-    .then(() => {
-      console.log("Document successfully written!");
-    })
-    .catch((error) => {
-      console.error("Error writing document: ", error);
-    });
+export function setUser(user) {
+  user = user;
+}
+
+export async function addTask(
+  name,
+  description,
+  helpneeded,
+  assigned,
+  progress
+) {
+  if (
+    name !== "" &&
+    description !== "" &&
+    helpneeded !== undefined &&
+    assigned !== null &&
+    progress !== null
+  ) {
+    console.log("hello there");
+    await db
+      .collection("tasks")
+      .doc()
+      .set({
+        description: description,
+        helpneeded: helpneeded,
+        name: name,
+        assigned: assigned,
+        progress: progress,
+      })
+      .then(() => {
+        console.log("Document successfully written!");
+      })
+      .catch((error) => {
+        console.error("Error writing document: ", error);
+      });
+  } else {
+    console.error("ERROR");
+    throw "Please fill all inputs and try again";
+  }
 }

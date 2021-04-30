@@ -35,24 +35,24 @@ const Employee = (props) => {
     if (emp.phone) {
       setPhone("tel: " + emp.phone);
     }
-  }, []);
+  }, [props.task.helpneeded, emp.email, emp.phone]);
 
   return (
     <div className="mainEmployee">
       <div className="employeeData">
         <div className="employeeHeader">
           <a className="contactLink" href={email}>
-            <img src={MailIcon} />
+            <img src={MailIcon} alt="MailIcon" />
           </a>
           <a className="contactLink">
-            <img src={messageIcon} />
+            <img src={messageIcon} alt="MessageIcon" />
           </a>
           <a className="contactLink" href={phone}>
-            <img src={phoneIcon} />
+            <img src={phoneIcon} alt="PhoneIcon" />
           </a>
         </div>
         <div className="employeeMeta">
-          <img src={emp.imageURL} />
+          <img src={emp.imageURL} alt="ImageUrl" />
           <h2>{emp.name}</h2>
         </div>
         <div className="currentWork">

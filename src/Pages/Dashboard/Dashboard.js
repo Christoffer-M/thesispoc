@@ -15,7 +15,7 @@ const Dashboard = () => {
   const [loading, setLoading] = useState(true);
   const [userFound, setUserFound] = useState(false);
 
-  function fetchdata() {
+  const fetchdata = () => {
     firebase.auth().onAuthStateChanged(async (user) => {
       if (user) {
         //Set user Image based on Google Image
@@ -33,7 +33,7 @@ const Dashboard = () => {
         setLoading(false);
       }
     });
-  }
+  };
 
   useEffect(() => {
     fetchdata();
@@ -42,29 +42,34 @@ const Dashboard = () => {
   async function fillUserTasks() {
     console.log("Filling user Tasks");
     await firebaseDB.getUserTasks().then((res) => {
+      res.sort(compare);
       setTasks(res);
     });
     console.log("Done Filling user Tasks");
   }
 
+  function compare(a, b) {
+    if (a.progress > b.progress) {
+      return -1;
+    }
+    if (a.progress < b.progress) {
+      return 1;
+    }
+    return 0;
+  }
+
   async function fillTeamMembers() {
-    console.log("filling teams");
     await firebaseDB.getEmployees().then(async (res) => {
       const currentTeam = [];
 
       for (const emp of res) {
         const currentTaskID = emp.data.currentTask.trim();
         await firebaseDB.getTask(currentTaskID).then((res) => {
-          console.log(res);
           currentTeam.push({ employee: emp.data, currentTask: res });
-          console.log("pushing team");
         });
       }
-
-      console.log("Filling Teams now");
       setTeam(currentTeam);
     });
-    console.log("Done Filling Teams");
   }
 
   if (loading) {
@@ -73,12 +78,12 @@ const Dashboard = () => {
     return <Redirect to={{ pathname: "/" }} />;
   } else {
     return (
-      <div className="container">
+      <div>
         <div className="tasks">
           <div className="taskHeader">
-            <img className="userImage" src={userImage}></img>
+            <img className="userImage" src={userImage} alt="userImage" />
             <h2 className="mainHeadline"> Your Tasks</h2>
-            <TaskModal />
+            <TaskModal reloadTasks={fillUserTasks} />
           </div>
 
           <div className="mainBarContainer">
@@ -86,7 +91,9 @@ const Dashboard = () => {
               return (
                 <React.Fragment key={"A" + idx}>
                   <Task key={idx} progress={item.progress} name={item.name} />
-                  {idx === 2 && <p key={"B" + idx} className="breaker"></p>}
+                  {(idx + 1) % 3 === 0 && (
+                    <p key={"B" + idx} className="breaker"></p>
+                  )}
                 </React.Fragment>
               );
             })}
@@ -105,6 +112,8 @@ const Dashboard = () => {
                     task={item.currentTask}
                   />
                 );
+              } else {
+                return null;
               }
             })}
           </div>
