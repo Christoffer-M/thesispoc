@@ -60,8 +60,9 @@ export async function getUserTasks() {
       let arr = [];
       ref.docs.forEach((doc) => {
         console.log("returning tasks");
+
         if (doc.data().assigned === getUser().uid) {
-          arr.push(doc.data());
+          arr.push({ id: doc.id, data: doc.data() });
         }
       });
       return arr;
@@ -138,4 +139,8 @@ export async function addTask(
     console.error("ERROR");
     throw "Please fill all inputs and try again";
   }
+}
+
+export async function deleteTask(id) {
+  await db.collection("tasks").doc(id).delete();
 }

@@ -4,6 +4,7 @@ import firebase from "firebase/app";
 import * as firebaseDB from "../../database/firebaseDB";
 import { Redirect } from "react-router";
 import Task from "../../components/Task/Task";
+import TaskModal from "../../components/TaskModal/TaskModal";
 import Loading from "../Loading/Loading";
 
 const YourWork = () => {
@@ -35,10 +36,11 @@ const YourWork = () => {
   }
 
   function compare(a, b) {
-    if (a.progress > b.progress) {
+    console.log(a.data.progress);
+    if (a.data.progress > b.data.progress) {
       return -1;
     }
-    if (a.progress < b.progress) {
+    if (a.data.progress < b.data.progress) {
       return 1;
     }
     return 0;
@@ -55,17 +57,23 @@ const YourWork = () => {
   } else {
     return (
       <div class="yourWork_MainDiv">
-        <h2>Your Tasks</h2>
+        <div class="yourWork_Header">
+          <h2>Your Tasks</h2>
+          <TaskModal reloadTasks={fillUserTasks} />
+        </div>
+
         <div className="workContainer">
           {tasks.map((val, idx) => {
             return (
               <React.Fragment key={"A" + idx}>
                 <Task
                   large={true}
-                  name={val.name}
-                  progress={val.progress}
-                  description={val.description}
-                  helpNeed={val.helpneeded}
+                  id={val.id}
+                  name={val.data.name}
+                  progress={val.data.progress}
+                  description={val.data.description}
+                  helpNeed={val.data.helpneeded}
+                  reloadTasks={fillUserTasks}
                   key={idx}
                 />
                 {(idx + 1) % 2 === 0 && (

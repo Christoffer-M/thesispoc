@@ -2,10 +2,15 @@
 
 
 .yourWork_MainDiv {
-    h2 {
-        font-size: 30px;
-        font-weight: bolder;
+    .yourWork_Header {
+        display: flex;
+        align-items: center;
+        h2 {
+            font-size: 30px;
+            font-weight: bolder;
+        }
     }
+
     .workContainer {
         display: flex;
         flex-flow: row wrap;

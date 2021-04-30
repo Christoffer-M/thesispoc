@@ -49,10 +49,10 @@ const Dashboard = () => {
   }
 
   function compare(a, b) {
-    if (a.progress > b.progress) {
+    if (a.data.progress > b.data.progress) {
       return -1;
     }
-    if (a.progress < b.progress) {
+    if (a.data.progress < b.data.progress) {
       return 1;
     }
     return 0;
@@ -90,7 +90,11 @@ const Dashboard = () => {
             {tasks.map((item, idx) => {
               return (
                 <React.Fragment key={"A" + idx}>
-                  <Task key={idx} progress={item.progress} name={item.name} />
+                  <Task
+                    key={idx}
+                    progress={item.data.progress}
+                    name={item.data.name}
+                  />
                   {(idx + 1) % 3 === 0 && (
                     <p key={"B" + idx} className="breaker"></p>
                   )}
