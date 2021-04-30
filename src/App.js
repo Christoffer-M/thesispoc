@@ -1,4 +1,4 @@
-import "./app.scss";
+import "./App.scss";
 import React from "react";
 import { Switch, Route, useLocation } from "react-router-dom";
 import Header from "./components/Header/Header";
