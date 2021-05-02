@@ -1,6 +1,7 @@
 import { useRef, useState } from "react";
 import "./AccountCreation.scss";
-import { createNewUser, uploadPicture } from "../../database/firebaseDB";
+import { uploadPicture, createNewUser } from "../../database/firebaseDB";
+import axios from "axios";
 
 const AccountCreation = () => {
   const nameInput = useRef(null);
@@ -11,30 +12,39 @@ const AccountCreation = () => {
   const passwordInput = useRef(null);
   const [picture, setPictureFilePath] = useState(null);
   const [showErrorText, setShowErrorText] = useState(false);
+  const [errorText, setErrorText] = useState("");
 
   function setPicture() {
     setPictureFilePath(URL.createObjectURL(fileInput.current.files[0]));
   }
 
   async function createAccount() {
+    const name = nameInput.current.value;
+    const email = emailInput.current.value;
+    const phone = phoneInput.current.value;
+    const title = titleInput.current.value;
+    const password = titleInput.current.value;
     if (
-      nameInput.current.value !== "" &&
-      emailInput.current.value !== "" &&
-      phoneInput.current.value !== "" &&
-      titleInput.current.value !== "" &&
-      passwordInput.current.value !== "" &&
+      name !== "" &&
+      email !== "" &&
+      phone !== "" &&
+      title !== "" &&
+      password !== "" &&
       picture !== null
     ) {
-      setShowErrorText(false);
-      await createNewUser(
-        nameInput.current.value,
-        emailInput.current.value,
-        passwordInput.current.value,
-        phoneInput.current.value,
-        titleInput.current.value,
-        picture
-      );
+      const imageURL = await uploadPicture(picture);
+      await createNewUser(name, email, phone, password, title, imageURL)
+        .then((res) => {
+          console.log("Success");
+          console.log(res);
+          setErrorText(res);
+        })
+        .catch((err) => {
+          setShowErrorText(true);
+          setErrorText(err);
+        });
     } else {
+      setErrorText("Please fill out all the fields");
       setShowErrorText(true);
     }
   }
@@ -62,9 +72,7 @@ const AccountCreation = () => {
           onChange={setPicture}
         ></input>
       </div>
-      {showErrorText && (
-        <p className="errorText">Please fill out all the fields</p>
-      )}
+      {showErrorText && <p className="errorText">{errorText}</p>}
       <button className="submit" onClick={createAccount}>
         Create Account
       </button>

@@ -1,8 +1,8 @@
 import firebase from "firebase/app";
 import * as firebaseAll from "firebase";
-import * as admin from "firebase-admin";
 import "firebase/auth";
 import "firebase/firestore";
+import axios from "axios";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCijJugovDjBgNJSQKUgGXglQjsVMxnNpI",
@@ -41,59 +41,52 @@ export async function googleLogin() {
 }
 
 export async function createNewUser(
-  fullName,
+  name,
   email,
-  password,
   phone,
+  password,
   title,
-  imageBlob
+  imageURL
 ) {
-  const imageURL = await uploadPicture(imageBlob);
-  return await admin
-    .auth()
-    .createUser({
+  return await axios
+    .post("https://thesis-node-api.vercel.app/api/createUser", {
+      name: name,
       email: email,
+      phone: phone,
       password: password,
-      photoURL: imageURL,
-      displayName: fullName,
-      phoneNumber: phone,
-      disabled: false,
+      title: title,
+      imageURL: imageURL,
     })
-    .then(async (userRecord) => {
-      console.log("Succesfully create employee in firebase!");
-      await createEmployee(
-        userRecord.email,
-        userRecord.uid,
-        userRecord.displayName,
-        userRecord.photoURL,
-        userRecord.phoneNumber,
-        title
-      );
+    .then((res) => {
+      console.log(res);
+      return "User succesfully created!";
     })
-    .catch((error) => {
-      console.log("ERROR", error);
-      return error;
+    .catch((err) => {
+      if (err.response) {
+        console.error(err.response.data.message);
+        throw err.response.data.message;
+      }
     });
 }
 
-async function createEmployee(email, id, fullName, imageURL, phone, title) {
-  await db
-    .collection("employee")
-    .doc(id)
-    .set({
-      email: email,
-      imageURL: imageURL,
-      name: fullName,
-      phone: phone,
-      title: title,
-    })
-    .then(() => {
-      console.log("Successfully added employee!");
-    })
-    .catch((err) => {
-      console.error("Something went wrong creating employee record", err);
-    });
-}
+// async function createEmployee(email, id, fullName, imageURL, phone, title) {
+//   await db
+//     .collection("employee")
+//     .doc(id)
+//     .set({
+//       email: email,
+//       imageURL: imageURL,
+//       name: fullName,
+//       phone: phone,
+//       title: title,
+//     })
+//     .then(() => {
+//       console.log("Successfully added employee!");
+//     })
+//     .catch((err) => {
+//       console.error("Something went wrong creating employee record", err);
+//     });
+// }
 
 export async function uploadPicture(file) {
   const MyDate = new Date();
