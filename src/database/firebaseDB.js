@@ -1,4 +1,6 @@
 import firebase from "firebase/app";
+import * as firebaseAll from "firebase";
+import * as admin from "firebase-admin";
 import "firebase/auth";
 import "firebase/firestore";
 
@@ -38,6 +40,78 @@ export async function googleLogin() {
   return res;
 }
 
+export async function createNewUser(
+  fullName,
+  email,
+  password,
+  phone,
+  title,
+  imageBlob
+) {
+  const imageURL = await uploadPicture(imageBlob);
+  return await admin
+    .auth()
+    .createUser({
+      email: email,
+      password: password,
+      photoURL: imageURL,
+      displayName: fullName,
+      phoneNumber: phone,
+      disabled: false,
+    })
+    .then(async (userRecord) => {
+      console.log("Succesfully create employee in firebase!");
+      await createEmployee(
+        userRecord.email,
+        userRecord.uid,
+        userRecord.displayName,
+        userRecord.photoURL,
+        userRecord.phoneNumber,
+        title
+      );
+    })
+    .catch((error) => {
+      console.log("ERROR", error);
+      return error;
+    });
+}
+
+async function createEmployee(email, id, fullName, imageURL, phone, title) {
+  await db
+    .collection("employee")
+    .doc(id)
+    .set({
+      email: email,
+      imageURL: imageURL,
+      name: fullName,
+      phone: phone,
+      title: title,
+    })
+    .then(() => {
+      console.log("Successfully added employee!");
+    })
+    .catch((err) => {
+      console.error("Something went wrong creating employee record", err);
+    });
+}
+
+export async function uploadPicture(file) {
+  const MyDate = new Date();
+  const MyDateString =
+    ("0" + MyDate.getDate()).slice(-2) +
+    "" +
+    ("0" + (MyDate.getMonth() + 1)).slice(-2) +
+    "" +
+    MyDate.getFullYear();
+  console.log(MyDateString);
+  const fileName = MyDateString + "_" + file.name;
+  const storageRef = firebaseAll.default.storage().ref();
+  const fileRef = storageRef.child(fileName);
+
+  await fileRef.put(file);
+  return await fileRef.getDownloadURL();
+}
+
 export async function getEmployees() {
   return await db
     .collection("employee")
@@ -51,6 +125,19 @@ export async function getEmployees() {
 }
 
 export async function getEmployee(id) {}
+
+export async function changeHelpRequest(id, bool) {
+  return await db
+    .collection("tasks")
+    .doc(id)
+    .update({ helpneeded: bool })
+    .then(() => {
+      console.log("helpNeeded Fields sucessfully changed");
+    })
+    .catch((err) => {
+      console.error("Error writing document: ", err);
+    });
+}
 
 export async function getUserTasks() {
   return await db

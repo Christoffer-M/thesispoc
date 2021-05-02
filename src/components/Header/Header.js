@@ -52,7 +52,7 @@ const Header = () => {
         </ul>
         <img
           src={userImage}
-          class="userImage"
+          className="userImage"
           onClick={() => {
             console.log("setting drop down");
             setDropDown(!showDropDown);
@@ -61,7 +61,7 @@ const Header = () => {
         ></img>
       </nav>
       {showDropDown && (
-        <div class="userOptions_Container">
+        <div className="userOptions_Container">
           <ul>
             {dropDownOptions.map((val, idx) => {
               if (val.name === "Log Out") {

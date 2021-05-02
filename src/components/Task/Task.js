@@ -6,6 +6,7 @@ import "./Task.scss";
 
 const Task = (props) => {
   const [helpNeed, setHelpNeed] = useState("");
+  const [helpText, setHelpText] = useState("Request Help");
   const [modalIsOpen, setIsOpen] = useState(false);
 
   const deleteTask = async () => {
@@ -29,11 +30,12 @@ const Task = (props) => {
 
   useEffect(() => {
     Modal.setAppElement("#root");
-
     if (props.helpNeed) {
       setHelpNeed("Yes");
+      setHelpText("Remove help Request");
     } else {
       setHelpNeed("No");
+      setHelpText("Request help");
     }
   }, []);
   if (props.large) {
@@ -64,12 +66,30 @@ const Task = (props) => {
             <ProgressBar completed={props.progress} />
           </div>
 
-          <div class="helpDiv">
+          <div className="helpDiv">
             <h4>Help requested: {helpNeed} </h4>
           </div>
-          <button className="deleteButton" onClick={openModal}>
-            Delete Task
-          </button>
+          <div className="buttonContainer">
+            <button
+              className="button request"
+              onClick={async () => {
+                if (helpNeed === "Yes") {
+                  firebaseDB.changeHelpRequest(props.id, false);
+                  setHelpText("Request help");
+                  setHelpNeed("No");
+                } else {
+                  firebaseDB.changeHelpRequest(props.id, true);
+                  setHelpText("Remove Request Help");
+                  setHelpNeed("Yes");
+                }
+              }}
+            >
+              {helpText}
+            </button>
+            <button className="button delete" onClick={openModal}>
+              Delete Task
+            </button>
+          </div>
         </div>
       </>
     );

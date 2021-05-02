@@ -16,6 +16,12 @@
   }
 }
 
+.buttonContainer {
+  display: flex;
+  justify-content: space-between;
+  
+}
+
 .progressBarContainer {
     margin-right: 25px;
     display: flex;
@@ -36,14 +42,14 @@
     margin: 10px 0px;
     box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.25);
 
-    .deleteButton {
+    .button {
       display: flex;
       align-items: center;
       justify-content: center;
       align-self: flex-end;
       color: antiquewhite;
       background: linear-gradient(90deg, #FF0000 0%, #FF9900  100%);
-      font-size: 18px;
+      font-size: 16px;
       font-weight: 600;
       border: 0px;
       border-radius: 30px;
@@ -51,6 +57,15 @@
       cursor: pointer;
       width: 35%;
       margin-top: 20px;
+      &.delete {
+        background: linear-gradient(90deg, #FF0000 0%, #FF9900  100%);
+
+      }
+
+      &.request {
+        background: linear-gradient(90deg, #185a9d 0%, #43cea2 100%);
+
+      }
     }
     &:nth-child(3n+1) {
       margin-right: 30px;

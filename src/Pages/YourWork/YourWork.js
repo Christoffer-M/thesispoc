@@ -56,8 +56,8 @@ const YourWork = () => {
     return <Redirect to={{ pathname: "/" }} />;
   } else {
     return (
-      <div class="yourWork_MainDiv">
-        <div class="yourWork_Header">
+      <div className="yourWork_MainDiv">
+        <div className="yourWork_Header">
           <h2>Your Tasks</h2>
           <TaskModal reloadTasks={fillUserTasks} />
         </div>
