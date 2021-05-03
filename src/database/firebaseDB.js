@@ -65,7 +65,6 @@ export async function normalLogin(email, password) {
     .signInWithEmailAndPassword(email, password)
     .then((userCredential) => {
       // Signed in
-      var user = userCredential.user;
       // ...
       console.log("SUCCESSFULLY LOGGED IN");
     })
