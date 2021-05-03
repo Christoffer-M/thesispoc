@@ -82,9 +82,7 @@ export async function createNewUser(
   title,
   imageURL
 ) {
-  console.log(password);
   const trimmedPassword = password.trim();
-  console.log(trimmedPassword);
   return await axios
     .post("https://thesis-node-api.vercel.app/api/createUser", {
       name: name,
