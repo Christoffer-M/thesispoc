@@ -18,14 +18,19 @@ const Employee = (props) => {
     email: props.employee.email,
   };
 
-  const task = {
-    description: props.task.description,
-    progress: props.task.progress,
-  };
+  let task;
+  if (props.task !== null) {
+    task = {
+      description: props.task.description,
+      progress: props.task.progress,
+    };
+  }
 
   useEffect(() => {
-    if (props.task.helpneeded) {
-      setHelp("Yes");
+    if (props.task !== null) {
+      if (props.task.helpneeded) {
+        setHelp("Yes");
+      }
     }
 
     if (emp.email) {
@@ -35,7 +40,7 @@ const Employee = (props) => {
     if (emp.phone) {
       setPhone("tel: " + emp.phone);
     }
-  }, [props.task.helpneeded, emp.email, emp.phone]);
+  }, [emp.email, emp.phone]);
 
   return (
     <div className="mainEmployee">
@@ -44,9 +49,9 @@ const Employee = (props) => {
           <a className="contactLink" href={email}>
             <img src={MailIcon} alt="MailIcon" />
           </a>
-          <a className="contactLink">
+          <p className="contactLink">
             <img src={messageIcon} alt="MessageIcon" />
-          </a>
+          </p>
           <a className="contactLink" href={phone}>
             <img src={phoneIcon} alt="PhoneIcon" />
           </a>
@@ -55,16 +60,22 @@ const Employee = (props) => {
           <img src={emp.imageURL} alt="ImageUrl" />
           <h2>{emp.name}</h2>
         </div>
-        <div className="currentWork">
-          <h3>Currently working on:</h3>
-          <p>{task.description}</p>
-          <h3>Progress:</h3>
-          <ProgressBar completed={task.progress} />
-        </div>
-        <div className="helpNeeded">
-          <h3>Looking for advice</h3>
-          <p>{helpNeeded}</p>
-        </div>
+        {task !== undefined ? (
+          <>
+            <div className="currentWork">
+              <h3>Currently working on:</h3>
+              <p>{task.description}</p>
+              <h3>Progress:</h3>
+              <ProgressBar completed={task.progress} />
+            </div>
+            <div className="helpNeeded">
+              <h3>Looking for advice</h3>
+              <p>{helpNeeded}</p>
+            </div>
+          </>
+        ) : (
+          <h3>Currently not assigned to a task</h3>
+        )}
       </div>
     </div>
   );

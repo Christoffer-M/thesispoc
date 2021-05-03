@@ -1,7 +1,7 @@
 import firebase from "firebase/app";
-import * as firebaseAll from "firebase";
 import "firebase/auth";
 import "firebase/firestore";
+import "firebase/storage";
 import axios from "axios";
 
 const firebaseConfig = {
@@ -57,8 +57,8 @@ export async function createNewUser(
       title: title,
       imageURL: imageURL,
     })
-    .then((res) => {
-      console.log(res);
+    .then(async (res) => {
+      await createEmployee(email, res.data.uid, name, imageURL, phone, title);
       return "User succesfully created!";
     })
     .catch((err) => {
@@ -69,26 +69,27 @@ export async function createNewUser(
     });
 }
 
-// async function createEmployee(email, id, fullName, imageURL, phone, title) {
-//   await db
-//     .collection("employee")
-//     .doc(id)
-//     .set({
-//       email: email,
-//       imageURL: imageURL,
-//       name: fullName,
-//       phone: phone,
-//       title: title,
-//     })
-//     .then(() => {
-//       console.log("Successfully added employee!");
-//     })
-//     .catch((err) => {
-//       console.error("Something went wrong creating employee record", err);
-//     });
-// }
+async function createEmployee(email, id, fullName, imageURL, phone, title) {
+  await db
+    .collection("employee")
+    .doc(id)
+    .set({
+      email: email,
+      imageURL: imageURL,
+      name: fullName,
+      phone: phone,
+      title: title,
+    })
+    .then(() => {
+      console.log("Successfully added employee!");
+    })
+    .catch((err) => {
+      console.error("Something went wrong creating employee record", err);
+    });
+}
 
-export async function uploadPicture(file) {
+export async function uploadPicture(file, size, type) {
+  let fileType;
   const MyDate = new Date();
   const MyDateString =
     ("0" + MyDate.getDate()).slice(-2) +
@@ -97,12 +98,17 @@ export async function uploadPicture(file) {
     "" +
     MyDate.getFullYear();
   console.log(MyDateString);
-  const fileName = MyDateString + "_" + file.name;
-  const storageRef = firebaseAll.default.storage().ref();
-  const fileRef = storageRef.child(fileName);
+  if (type.includes("jpeg")) {
+    fileType = ".jpg";
+  } else {
+    fileType = ".png";
+  }
+  const fileName = MyDateString + "_" + size + fileType;
+  const storageRef = firebase.storage().ref();
+  const fileRef = storageRef.child("profilePictures/" + fileName);
 
   await fileRef.put(file);
-  return await fileRef.getDownloadURL();
+  return fileRef;
 }
 
 export async function getEmployees() {
@@ -180,10 +186,6 @@ export function getUser() {
   return firebase.auth().currentUser;
 }
 
-export function setUser(user) {
-  user = user;
-}
-
 export async function addTask(
   name,
   description,
@@ -217,7 +219,7 @@ export async function addTask(
       });
   } else {
     console.error("ERROR");
-    throw "Please fill all inputs and try again";
+    throw new Error("Please fill all inputs and try again");
   }
 }
 

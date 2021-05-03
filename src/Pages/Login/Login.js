@@ -23,7 +23,6 @@ const Login = () => {
   useEffect(() => {
     firebase.auth().onAuthStateChanged((user) => {
       if (user) {
-        DB.setUser(user);
         setRedirect(true);
       }
     });

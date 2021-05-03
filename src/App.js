@@ -11,7 +11,8 @@ function App() {
 
   return (
     <div className="app">
-      {currentPath !== "/" && <Header />}
+      <Switch> {currentPath !== "/" && <Header />}</Switch>
+
       <Switch>
         <Route exact path="/" component={Login}></Route>
         <div className="container">

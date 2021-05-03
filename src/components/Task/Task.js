@@ -37,7 +37,8 @@ const Task = (props) => {
       setHelpNeed("No");
       setHelpText("Request help");
     }
-  }, []);
+  }, [props.helpNeed]);
+
   if (props.large) {
     return (
       <>

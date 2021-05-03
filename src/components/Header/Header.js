@@ -51,6 +51,7 @@ const Header = () => {
           })}
         </ul>
         <img
+          alt="userImage"
           src={userImage}
           className="userImage"
           onClick={() => {
@@ -65,10 +66,9 @@ const Header = () => {
           <ul>
             {dropDownOptions.map((val, idx) => {
               if (val.name === "Log Out") {
-                console.log("HI THERE");
                 return (
                   <li key={idx} onClick={logout}>
-                    <a>{val.name}</a>
+                    <p>{val.name}</p>
                     {islogout && <Redirect to={{ pathname: "/" }} />}
                   </li>
                 );

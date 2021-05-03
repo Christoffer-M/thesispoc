@@ -37,6 +37,7 @@ const Dashboard = () => {
 
   useEffect(() => {
     fetchdata();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   async function fillUserTasks() {
@@ -63,10 +64,15 @@ const Dashboard = () => {
       const currentTeam = [];
 
       for (const emp of res) {
-        const currentTaskID = emp.data.currentTask.trim();
-        await firebaseDB.getTask(currentTaskID).then((res) => {
-          currentTeam.push({ employee: emp.data, currentTask: res });
-        });
+        let currentTaskID;
+        if (emp.data.currentTask !== undefined) {
+          currentTaskID = emp.data.currentTask.trim();
+          await firebaseDB.getTask(currentTaskID).then((res) => {
+            currentTeam.push({ employee: emp.data, currentTask: res });
+          });
+        } else {
+          currentTeam.push({ employee: emp.data, currentTask: null });
+        }
       }
       setTeam(currentTeam);
     });
@@ -108,7 +114,6 @@ const Dashboard = () => {
           <div className="teamMembers">
             {team.map((item, idx) => {
               if (item.employee) {
-                console.log(idx);
                 return (
                   <Employee
                     employee={item.employee}
