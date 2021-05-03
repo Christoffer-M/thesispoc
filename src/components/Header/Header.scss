@@ -42,6 +42,7 @@ nav {
   height: 100%;
   .userImage {
     cursor: pointer;
+    object-fit: cover;
     height: 80px;
     width: 80px;
     border-radius: 90px;

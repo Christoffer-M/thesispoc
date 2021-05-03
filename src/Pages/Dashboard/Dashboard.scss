@@ -25,6 +25,7 @@
     align-items: center;
     .userImage {
       margin-right: 20px;
+      object-fit: cover;
       border-radius: 90px;
       border: 2px solid #185a9d;
       width: 120px;
