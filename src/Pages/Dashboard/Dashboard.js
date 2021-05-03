@@ -14,13 +14,14 @@ const Dashboard = () => {
   const [userImage, setImage] = useState("");
   const [loading, setLoading] = useState(true);
   const [userFound, setUserFound] = useState(false);
+  let userID;
 
   const fetchdata = () => {
     firebase.auth().onAuthStateChanged(async (user) => {
       if (user) {
         //Set user Image based on Google Image
         setImage(user.photoURL);
-
+        userID = user.uid;
         //Set user Tasks
         await fillUserTasks();
 
@@ -65,13 +66,15 @@ const Dashboard = () => {
 
       for (const emp of res) {
         let currentTaskID;
-        if (emp.data.currentTask !== undefined) {
-          currentTaskID = emp.data.currentTask.trim();
-          await firebaseDB.getTask(currentTaskID).then((res) => {
-            currentTeam.push({ employee: emp.data, currentTask: res });
-          });
-        } else {
-          currentTeam.push({ employee: emp.data, currentTask: null });
+        if (emp.id !== userID) {
+          if (emp.data.currentTask !== undefined) {
+            currentTaskID = emp.data.currentTask.trim();
+            await firebaseDB.getTask(currentTaskID).then((res) => {
+              currentTeam.push({ employee: emp.data, currentTask: res });
+            });
+          } else {
+            currentTeam.push({ employee: emp.data, currentTask: null });
+          }
         }
       }
       setTeam(currentTeam);

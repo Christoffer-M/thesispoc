@@ -1,9 +1,7 @@
 .mainBarContainer {
   display: flex;
   flex-flow: row wrap;
-
 }
-
 
 .breaker {
   display: none;
@@ -12,8 +10,9 @@
   height: 0;
 }
 
-.mainBarContainer::before, .container::after {
-  content: '';
+.mainBarContainer::before,
+.container::after {
+  content: "";
   order: 1;
 }
 
@@ -27,7 +26,8 @@
     .userImage {
       margin-right: 20px;
       border-radius: 90px;
-      border: 2px solid #185a9d ;
+      border: 2px solid #185a9d;
+      max-height: 120px;
     }
   }
 }

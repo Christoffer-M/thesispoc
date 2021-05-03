@@ -49,10 +49,22 @@ const Login = () => {
       setShowErrorText(true);
       setErrorLoginText("Please enter both email and password field");
     } else {
-      setShowErrorText(false);
+      const email = emailInput.current.value.trim();
+      const password = passwordInput.current.value.trim();
+      console.log(password);
+      await DB.normalLogin(email, password)
+        .then((res) => {
+          console.log(res);
+          console.log("Success");
+          console.log("Redirecting...");
+          setRedirect(true);
+        })
+        .catch((err) => {
+          setErrorLoginText(err.message);
+          setShowErrorText(true);
+          console.error(err.message);
+        });
     }
-    console.log(emailInput.current.value);
-    console.log(passwordInput.current);
   }
 
   return (
@@ -64,7 +76,11 @@ const Login = () => {
             {" "}
             <div className="loginForm">
               <input placeholder="E-mail" ref={emailInput}></input>
-              <input placeholder="Password" ref={passwordInput}></input>
+              <input
+                placeholder="Password"
+                ref={passwordInput}
+                type="password"
+              ></input>
               {showErrorText && <p className="errorText">{errorLoginText}</p>}
               <button className="loginButton" onClick={normalLogin}>
                 Login

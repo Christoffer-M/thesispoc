@@ -24,8 +24,8 @@ const AccountCreation = () => {
     const name = nameInput.current.value;
     const email = emailInput.current.value;
     const phone = phoneInput.current.value;
+    const password = passwordInput.current.value;
     const title = titleInput.current.value;
-    const password = titleInput.current.value;
     if (
       name !== "" &&
       email !== "" &&

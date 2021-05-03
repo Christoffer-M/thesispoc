@@ -27,10 +27,28 @@ export async function googleLogin() {
   const res = await firebase
     .auth()
     .signInWithPopup(provider)
-    .then((res) => {
-      // const storage = firebase.storage();
-      // const imageReference = storage.refFromURL(res.user.photoURL);
-      // console.log(imageReference);
+    .then(async (res) => {
+      let found = false;
+      (await getEmployees()).forEach((val) => {
+        if (val.id === res.user.uid) {
+          found = true;
+        }
+      });
+      console.log(found);
+      if (!found) {
+        console.log("Does not contain user, creating new!");
+        await createEmployee(
+          res.user.email,
+          res.user.uid,
+          res.user.displayName,
+          res.user.photoURL,
+          res.user.phoneNumber,
+          res.user.displayName
+        );
+      } else {
+        console.log("Already contains user, will only log in.");
+      }
+
       return "success";
     })
     .catch((error) => {
@@ -38,6 +56,22 @@ export async function googleLogin() {
     });
 
   return res;
+}
+
+export async function normalLogin(email, password) {
+  console.log(typeof password);
+  return await firebase
+    .auth()
+    .signInWithEmailAndPassword(email, password)
+    .then((userCredential) => {
+      // Signed in
+      var user = userCredential.user;
+      // ...
+      console.log("SUCCESSFULLY LOGGED IN");
+    })
+    .catch((error) => {
+      throw error;
+    });
 }
 
 export async function createNewUser(
@@ -48,12 +82,15 @@ export async function createNewUser(
   title,
   imageURL
 ) {
+  console.log(password);
+  const trimmedPassword = password.trim();
+  console.log(trimmedPassword);
   return await axios
     .post("https://thesis-node-api.vercel.app/api/createUser", {
       name: name,
       email: email,
       phone: phone,
-      password: password,
+      password: trimmedPassword,
       title: title,
       imageURL: imageURL,
     })
@@ -116,7 +153,6 @@ export async function getEmployees() {
     .collection("employee")
     .get()
     .then((ref) => {
-      console.log(ref.docs);
       return ref.docs.map((doc) => {
         return { id: doc.id, data: doc.data() };
       });
