@@ -59,7 +59,7 @@ const YourWork = () => {
     return (
       <div className="yourWork_MainDiv">
         <div className="yourWork_Header">
-          <h2>Your Tasks</h2>
+          <h2>Your Work</h2>
           <TaskModal reloadTasks={fillUserTasks} />
         </div>
 

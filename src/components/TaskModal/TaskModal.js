@@ -48,8 +48,6 @@ const TaskModal = ({ reloadTasks }) => {
     const taskDescription = document.getElementById("taskDescription").value;
     let helpNeeded;
 
-    console.log(taskAssigned);
-
     const progress = Math.floor(Math.random() * 101);
 
     document.getElementsByName("helpNeeded").forEach((res) => {
@@ -61,12 +59,10 @@ const TaskModal = ({ reloadTasks }) => {
     firebaseDB
       .addTask(taskName, taskDescription, helpNeeded, taskAssigned, progress)
       .then(async () => {
-        console.log("Task successfully Added!");
         closeModal();
         await reloadTasks();
       })
       .catch((err) => {
-        console.log(err.toString());
         setErrorText(err.toString());
       });
 

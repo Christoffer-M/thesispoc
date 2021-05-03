@@ -67,7 +67,10 @@ const Dashboard = () => {
       for (const emp of res) {
         let currentTaskID;
         if (emp.id !== userID) {
-          if (emp.data.currentTask !== undefined) {
+          if (
+            emp.data.currentTask !== undefined &&
+            emp.data.currentTask !== ""
+          ) {
             currentTaskID = emp.data.currentTask.trim();
             await firebaseDB.getTask(currentTaskID).then((res) => {
               currentTeam.push({ employee: emp.data, currentTask: res });

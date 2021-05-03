@@ -20,8 +20,9 @@ const Employee = (props) => {
 
   let task;
   if (props.task !== null) {
+    console.log(props.task.name);
     task = {
-      description: props.task.description,
+      description: props.task.name,
       progress: props.task.progress,
     };
   }

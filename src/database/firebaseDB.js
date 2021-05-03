@@ -34,7 +34,6 @@ export async function googleLogin() {
           found = true;
         }
       });
-      console.log(found);
       if (!found) {
         console.log("Does not contain user, creating new!");
         await createEmployee(

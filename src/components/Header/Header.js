@@ -25,13 +25,9 @@ const Header = () => {
   };
 
   useEffect(() => {
-    console.log("Looping");
     setTimeout(() => {
       if (DB.getUser() !== null) {
-        console.log("Setting USER!");
         setImage(DB.getUser().photoURL);
-      } else {
-        console.log("Trying agian in 1 second");
       }
     }, 1000);
   }, []);
@@ -55,9 +51,7 @@ const Header = () => {
           src={userImage}
           className="userImage"
           onClick={() => {
-            console.log("setting drop down");
             setDropDown(!showDropDown);
-            console.log(showDropDown);
           }}
         ></img>
       </nav>

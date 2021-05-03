@@ -42,8 +42,6 @@ const AccountCreation = () => {
       const imageURL = await fileRef.getDownloadURL();
       await createNewUser(name, email, phone, password, title, imageURL)
         .then((res) => {
-          console.log("Success");
-          console.log(res);
           setErrorText(res);
         })
         .catch(async (err) => {
