@@ -40,6 +40,7 @@ const Employee = (props) => {
     if (emp.phone) {
       setPhone("tel: " + emp.phone);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [emp.email, emp.phone]);
 
   return (
