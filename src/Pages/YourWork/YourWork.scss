@@ -1,18 +1,17 @@
-
-
-
 .yourWork_MainDiv {
-    .yourWork_Header {
-        display: flex;
-        align-items: center;
-        h2 {
-            font-size: 30px;
-            font-weight: bolder;
-        }
+  .yourWork_Header {
+    div {
+      padding-left: 0px;
+      padding-bottom: 15px;
     }
+    h2 {
+      font-size: 33px;
+      font-weight: bolder;
+    }
+  }
+}
 
-    .workContainer {
-        display: flex;
-        flex-flow: row wrap;
-    }
+.taskCol {
+  margin-bottom: 20px;
+  padding-left: 0px !important;
 }

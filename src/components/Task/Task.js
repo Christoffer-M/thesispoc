@@ -3,6 +3,9 @@ import ProgressBar from "../Progress-Bar/Progress-Bar";
 import * as firebaseDB from "../../database/firebaseDB";
 import Modal from "react-modal";
 import "./Task.scss";
+import Container from "react-bootstrap/Container";
+import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col";
 
 const Task = (props) => {
   const [helpNeed, setHelpNeed] = useState("");
@@ -55,43 +58,58 @@ const Task = (props) => {
             <button onClick={closeModal}>No, take me back</button>
           </div>
         </Modal>
-        <div className="largeTaskContainer">
-          <h3>{props.name}</h3>
-          <div className="descriptionDiv">
-            <h4>Description: </h4>
-            <p>{props.description}</p>
-          </div>
+        <Container className="d-flex flex-column justify-content-between largeTaskContainer">
+          <Row>
+            <Col>
+              <h3>{props.name}</h3>
+            </Col>
+          </Row>
 
-          <div className="progressDiv">
-            <h4>Progress: </h4>
-            <ProgressBar completed={props.progress} />
-          </div>
+          <Row>
+            <Col>
+              <h4>Description: </h4>
+              <p>{props.description}</p>
+            </Col>
+          </Row>
 
-          <div className="helpDiv">
-            <h4>Help requested: {helpNeed} </h4>
-          </div>
-          <div className="buttonContainer">
-            <button
-              className="button request"
-              onClick={async () => {
-                if (helpNeed === "Yes") {
-                  firebaseDB.changeHelpRequest(props.id, false);
-                  setHelpText("Request help");
-                  setHelpNeed("No");
-                } else {
-                  firebaseDB.changeHelpRequest(props.id, true);
-                  setHelpText("Remove Request Help");
-                  setHelpNeed("Yes");
-                }
-              }}
-            >
-              {helpText}
-            </button>
-            <button className="button delete" onClick={openModal}>
-              Delete Task
-            </button>
-          </div>
-        </div>
+          <Row className="progressRow">
+            <Col>
+              <h4>Progress: </h4>
+              <ProgressBar completed={props.progress} />
+            </Col>
+          </Row>
+
+          <Row>
+            <Col>
+              <h4>Help requested: {helpNeed} </h4>
+            </Col>
+          </Row>
+          <Row className="d-flex justify-content-between">
+            <Col sm={12}>
+              <button
+                className="button request"
+                onClick={async () => {
+                  if (helpNeed === "Yes") {
+                    firebaseDB.changeHelpRequest(props.id, false);
+                    setHelpText("Request help");
+                    setHelpNeed("No");
+                  } else {
+                    firebaseDB.changeHelpRequest(props.id, true);
+                    setHelpText("Remove Request Help");
+                    setHelpNeed("Yes");
+                  }
+                }}
+              >
+                {helpText}
+              </button>
+            </Col>
+            <Col className="d-flex buttonCol" sm={12}>
+              <button className="button delete" onClick={openModal}>
+                Delete Task
+              </button>
+            </Col>
+          </Row>
+        </Container>
       </>
     );
   } else {

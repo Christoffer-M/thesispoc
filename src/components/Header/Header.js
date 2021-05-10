@@ -2,12 +2,15 @@ import "./Header.scss";
 import * as DB from "../../database/firebaseDB";
 import { Redirect, NavLink, Link } from "react-router-dom";
 import { useState, useEffect } from "react";
+import Container from "react-bootstrap/Container";
+import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col";
+import Dropdown from "react-bootstrap/Dropdown";
+import Navbar from "react-bootstrap/Navbar";
 
 const Header = () => {
   const [islogout, setLogout] = useState(false);
   const [userImage, setImage] = useState("");
-  const [showDropDown, setDropDown] = useState(false);
-
   const headers = [
     { name: "Dashboard", path: "/Dashboard" },
     { name: "Your Work", path: "/Work" },
@@ -33,51 +36,57 @@ const Header = () => {
   }, []);
 
   return (
-    <header className="header">
-      <nav>
-        <ul className="navigation">
+    <Navbar expand="lg" className="header" fixed="top">
+      <Container className="d-flex">
+        <Row className="navigation align-items-center w-100">
           {headers.map((ref, idx) => {
             return (
-              <li key={idx}>
+              <Col className="navItem align-items-center" xs="auto" key={idx}>
                 <NavLink to={ref.path} activeClassName="selected">
                   {ref.name}
                 </NavLink>
-              </li>
+              </Col>
             );
           })}
-        </ul>
-        <img
-          alt="userImage"
-          src={userImage}
-          className="userImage"
-          onClick={() => {
-            setDropDown(!showDropDown);
-          }}
-        ></img>
-      </nav>
-      {showDropDown && (
-        <div className="userOptions_Container">
-          <ul>
-            {dropDownOptions.map((val, idx) => {
-              if (val.name === "Log Out") {
-                return (
-                  <li key={idx} onClick={logout}>
-                    <p>{val.name}</p>
-                    {islogout && <Redirect to={{ pathname: "/" }} />}
-                  </li>
-                );
-              } else {
-                return (
-                  <li key={idx}>
-                    <Link to={val.path}>{val.name}</Link>
-                  </li>
-                );
-              }
-            })}
-          </ul>
-        </div>
-      )}
-    </header>
+          <Col className="d-flex justify-content-end">
+            <Dropdown>
+              <Dropdown.Toggle variant="success" id="dropdown-basic">
+                <img
+                  alt="userImage"
+                  src={userImage}
+                  className="img-fluid img-thumbnail userImage"
+                  id="dropdownMenuButton"
+                />
+              </Dropdown.Toggle>
+
+              <Dropdown.Menu>
+                {dropDownOptions.map((val, idx) => {
+                  if (val.name === "Log Out") {
+                    return (
+                      <Dropdown.Item
+                        onClick={() => {
+                          logout();
+                        }}
+                        key={idx}
+                      >
+                        Log Out
+                        {islogout && <Redirect to={{ pathname: "/" }} />}
+                      </Dropdown.Item>
+                    );
+                  } else {
+                    return (
+                      <Dropdown.Item key={idx}>
+                        <Link to={val.path}>{val.name}</Link>
+                      </Dropdown.Item>
+                    );
+                  }
+                })}
+              </Dropdown.Menu>
+            </Dropdown>
+          </Col>
+        </Row>
+      </Container>
+    </Navbar>
   );
 };
 

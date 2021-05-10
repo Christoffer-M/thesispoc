@@ -5,6 +5,8 @@ import Header from "./components/Header/Header";
 import Dashboard from "./Pages/Dashboard/Dashboard";
 import Login from "./Pages/Login/Login";
 import YourWork from "./Pages/YourWork/YourWork";
+import "bootstrap/dist/css/bootstrap.min.css";
+import Container from "react-bootstrap/Container";
 
 function App() {
   const currentPath = useLocation().pathname;
@@ -12,13 +14,14 @@ function App() {
   return (
     <div className="app">
       {currentPath !== "/" && <Header />}
-      <Switch>
-        <Route exact path="/" component={Login}></Route>
-        <div className="container">
+      <Container fluid className="appContainer">
+        <Switch>
+          <Route exact path="/" component={Login}></Route>
+
           <Route exact path="/Dashboard" component={Dashboard}></Route>
           <Route exact path="/Work" component={YourWork}></Route>
-        </div>
-      </Switch>
+        </Switch>
+      </Container>
     </div>
   );
 }

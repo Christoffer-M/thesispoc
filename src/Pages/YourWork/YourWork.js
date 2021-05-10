@@ -6,6 +6,9 @@ import { Redirect } from "react-router";
 import Task from "../../components/Task/Task";
 import TaskModal from "../../components/TaskModal/TaskModal";
 import Loading from "../Loading/Loading";
+import Container from "react-bootstrap/Container";
+import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col";
 
 const YourWork = () => {
   const [tasks, setTasks] = useState([]);
@@ -57,16 +60,18 @@ const YourWork = () => {
     return <Redirect to={{ pathname: "/" }} />;
   } else {
     return (
-      <div className="yourWork_MainDiv">
-        <div className="yourWork_Header">
-          <h2>Your Work</h2>
-          <TaskModal reloadTasks={fillUserTasks} />
-        </div>
+      <Container className="yourWork_MainDiv">
+        <Row className="yourWork_Header">
+          <Col className="d-flex">
+            <h2>Your Work</h2>
+            <TaskModal reloadTasks={fillUserTasks} />
+          </Col>
+        </Row>
 
-        <div className="workContainer">
+        <Row>
           {tasks.map((val, idx) => {
             return (
-              <React.Fragment key={"A" + idx}>
+              <Col xl={6} sm={12} className="taskCol" key={idx}>
                 <Task
                   large={true}
                   id={val.id}
@@ -77,14 +82,11 @@ const YourWork = () => {
                   reloadTasks={fillUserTasks}
                   key={idx}
                 />
-                {(idx + 1) % 2 === 0 && (
-                  <p key={"B" + idx} className="breaker"></p>
-                )}
-              </React.Fragment>
+              </Col>
             );
           })}
-        </div>
-      </div>
+        </Row>
+      </Container>
     );
   }
 };

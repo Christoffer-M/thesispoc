@@ -7,6 +7,9 @@ import { Redirect } from "react-router";
 import Loading from "../Loading/Loading";
 import Employee from "../../components/Employee/Employee";
 import TaskModal from "../../components/TaskModal/TaskModal";
+import Container from "react-bootstrap/Container";
+import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col";
 
 const Dashboard = () => {
   const [tasks, setTasks] = useState([]);
@@ -90,50 +93,54 @@ const Dashboard = () => {
     return <Redirect to={{ pathname: "/" }} />;
   } else {
     return (
-      <div>
-        <div className="tasks">
-          <div className="taskHeader">
-            <img className="userImage" src={userImage} alt="userImage" />
+      <Container>
+        <Row>
+          <Col xs={12} className="d-flex align-items-center">
+            <img
+              className="img-fluid img-thumbnail taskImage"
+              src={userImage}
+              alt="userImage"
+            />
             <h2 className="mainHeadline"> Your Tasks</h2>
             <TaskModal reloadTasks={fillUserTasks} />
-          </div>
+          </Col>
+        </Row>
+        <Row className="dashTasks">
+          {tasks.map((item, idx) => {
+            return (
+              <Col xl={4} md={6} xs={12} key={idx}>
+                <Task
+                  key={idx}
+                  progress={item.data.progress}
+                  name={item.data.name}
+                />
+                {(idx + 1) % 3 === 0 && (
+                  <p key={"B" + idx} className="breaker"></p>
+                )}
+              </Col>
+            );
+          })}
+        </Row>
 
-          <div className="mainBarContainer">
-            {tasks.map((item, idx) => {
-              return (
-                <React.Fragment key={"A" + idx}>
-                  <Task
-                    key={idx}
-                    progress={item.data.progress}
-                    name={item.data.name}
-                  />
-                  {(idx + 1) % 3 === 0 && (
-                    <p key={"B" + idx} className="breaker"></p>
-                  )}
-                </React.Fragment>
-              );
-            })}
-          </div>
-        </div>
-        <div className="team">
+        <Row className="team">
           <h2 className="mainHeadline">Your Team</h2>
-          <div className="teamMembers">
-            {team.map((item, idx) => {
-              if (item.employee) {
-                return (
+          {team.map((item, idx) => {
+            if (item.employee) {
+              return (
+                <Col xl={4} md={6} xs={12} key={idx}>
                   <Employee
                     employee={item.employee}
                     key={idx}
                     task={item.currentTask}
                   />
-                );
-              } else {
-                return null;
-              }
-            })}
-          </div>
-        </div>
-      </div>
+                </Col>
+              );
+            } else {
+              return null;
+            }
+          })}
+        </Row>
+      </Container>
     );
   }
 };

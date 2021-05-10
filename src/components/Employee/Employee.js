@@ -4,6 +4,9 @@ import { useEffect, useState } from "react";
 import MailIcon from "../../assets/icons/MailIcon.png";
 import messageIcon from "../../assets/icons/MessageIcon.png";
 import phoneIcon from "../../assets/icons/phoneIcon.png";
+import Container from "react-bootstrap/Container";
+import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col";
 
 const Employee = (props) => {
   const [helpNeeded, setHelp] = useState("no");
@@ -45,41 +48,62 @@ const Employee = (props) => {
   }, [emp.email, emp.phone]);
 
   return (
-    <div className="mainEmployee">
+    <Container className="mainEmployee">
       <div className="employeeData">
-        <div className="employeeHeader">
-          <a className="contactLink" href={email}>
-            <img src={MailIcon} alt="MailIcon" />
-          </a>
-          <p className="contactLink">
-            <img src={messageIcon} alt="MessageIcon" />
-          </p>
-          <a className="contactLink" href={phone}>
-            <img src={phoneIcon} alt="PhoneIcon" />
-          </a>
-        </div>
-        <div className="employeeMeta">
-          <img src={emp.imageURL} alt="ImageUrl" />
-          <h2>{emp.name}</h2>
-        </div>
+        <Row className="d-flex align-items-center justify-content-between">
+          <Col xs="auto">
+            <a className="contactLink" href={email}>
+              <img src={MailIcon} alt="MailIcon" />
+            </a>
+          </Col>
+          <Col xs="auto">
+            <p className="contactLink">
+              <img src={messageIcon} alt="MessageIcon" />
+            </p>
+          </Col>
+          <Col xs="auto">
+            <a className="contactLink" href={phone}>
+              <img src={phoneIcon} alt="PhoneIcon" />
+            </a>
+          </Col>
+        </Row>
+        <Row className="d-flex employeeMeta align-items-center justify-content-start">
+          <Col
+            lg={6}
+            sm={12}
+            className="d-flex imageCol justify-content-center"
+          >
+            <img src={emp.imageURL} alt="ImageUrl" className="img-fluid" />
+          </Col>
+          <Col lg={6} sm={12}>
+            <h2>{emp.name}</h2>
+          </Col>
+        </Row>
         {task !== undefined ? (
           <>
-            <div className="currentWork">
-              <h3>Currently working on:</h3>
-              <p>{task.description}</p>
-              <h3>Progress:</h3>
-              <ProgressBar completed={task.progress} />
-            </div>
-            <div className="helpNeeded">
-              <h3>Looking for advice</h3>
-              <p>{helpNeeded}</p>
-            </div>
+            <Row className="currentWork">
+              <Col xs={12}>
+                <h3>Currently working on:</h3>
+                <p>{task.description}</p>
+              </Col>
+
+              <Col xs={12}>
+                <h3>Progress:</h3>
+                <ProgressBar completed={task.progress} />
+              </Col>
+            </Row>
+            <Row className="helpNeeded">
+              <Col>
+                <h3>Looking for advice</h3>
+                <p>{helpNeeded}</p>
+              </Col>
+            </Row>
           </>
         ) : (
           <h3>Currently not assigned to a task</h3>
         )}
       </div>
-    </div>
+    </Container>
   );
 };
 

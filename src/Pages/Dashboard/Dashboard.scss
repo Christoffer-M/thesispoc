@@ -10,28 +10,18 @@
   height: 0;
 }
 
+.dashTasks {
+  margin-top: 10px !important;
+}
+
 .mainBarContainer::before,
 .container::after {
   content: "";
   order: 1;
 }
 
-.tasks {
-  text-align: left;
-  padding-top: 10px;
-  .taskHeader {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    .userImage {
-      margin-right: 20px;
-      object-fit: cover;
-      border-radius: 90px;
-      border: 2px solid #185a9d;
-      width: 120px;
-      height: 120px;
-    }
-  }
+.taskImage {
+  margin-right: 20px;
 }
 
 .team {
@@ -40,5 +30,8 @@
   .teamMembers {
     display: flex;
     flex-direction: row;
+  }
+  .mainHeadline {
+    margin-bottom: 20px;
   }
 }
