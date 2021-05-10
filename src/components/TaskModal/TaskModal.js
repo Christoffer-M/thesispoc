@@ -6,6 +6,9 @@ import closeButton from "../../assets/buttons/closeButton.svg";
 import * as firebaseDB from "../../database/firebaseDB";
 import Dropdown from "react-dropdown";
 import ClipLoader from "react-spinners/ClipLoader";
+import Container from "react-bootstrap/Container";
+import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col";
 
 const TaskModal = ({ reloadTasks }) => {
   const [modalIsOpen, setIsOpen] = useState(false);
@@ -84,52 +87,60 @@ const TaskModal = ({ reloadTasks }) => {
         overlayClassName="Overlay"
         onAfterOpen={afterOpenModal}
       >
-        <img
-          src={closeButton}
-          className="closeButton"
-          onClick={closeModal}
-          alt="closeButton"
-        />
-        <h2>Create a Task</h2>
-        <p>Fill the inputs below to create a task</p>
-        <form className="form">
-          <label>Task Name *</label>
-          <input placeholder="Task Name" id="taskName" />
-          <label>Task Description *</label>
-          <input placeholder="Task Description" id="taskDescription" />
-          <label>Task Assignee *</label>
-          <Dropdown
-            onChange={(res) => {
-              taskAssigned = res.value;
-            }}
-            options={employees}
-            placeholder="Select an option"
-            className="dropDown"
-            menuClassName="menuClass"
-            value={employees[0]}
-          />
-          <div className="helpInputs">
-            <label>Would you like help with this task? *</label>
-            <div className="radioButtons">
-              <div className="radioButton">
-                <input type="radio" name="helpNeeded" value="true" /> Yes
-              </div>
-              <div className="radioButton">
-                <input type="radio" name="helpNeeded" value="false" /> No
-              </div>
-            </div>
-          </div>
-          {!loading ? (
-            <div className="submit" onClick={createTask}>
-              Submit
-            </div>
-          ) : (
-            <button className="submit">
-              <ClipLoader size={12} color="#fff" />
-            </button>
-          )}
-          {errorText !== "" && <p className="errorText">{errorText}</p>}
-        </form>
+        <Container>
+          <Row>
+            <img
+              src={closeButton}
+              className="closeButton"
+              onClick={closeModal}
+              alt="closeButton"
+            />
+            <Col>
+              <h2>Create a Task</h2>
+              <p>Fill the inputs below to create a task</p>
+            </Col>
+            <Row>
+              <form className="form">
+                <label>Task Name *</label>
+                <input placeholder="Task Name" id="taskName" />
+                <label>Task Description *</label>
+                <input placeholder="Task Description" id="taskDescription" />
+                <label>Task Assignee *</label>
+                <Dropdown
+                  onChange={(res) => {
+                    taskAssigned = res.value;
+                  }}
+                  options={employees}
+                  placeholder="Select an option"
+                  className="dropDown"
+                  menuClassName="menuClass"
+                  value={employees[0]}
+                />
+                <div className="helpInputs">
+                  <label>Would you like help with this task? *</label>
+                  <div className="radioButtons">
+                    <div className="radioButton">
+                      <input type="radio" name="helpNeeded" value="true" /> Yes
+                    </div>
+                    <div className="radioButton">
+                      <input type="radio" name="helpNeeded" value="false" /> No
+                    </div>
+                  </div>
+                </div>
+                {!loading ? (
+                  <div className="submit" onClick={createTask}>
+                    Submit
+                  </div>
+                ) : (
+                  <button className="submit">
+                    <ClipLoader size={12} color="#fff" />
+                  </button>
+                )}
+                {errorText !== "" && <p className="errorText">{errorText}</p>}
+              </form>
+            </Row>
+          </Row>
+        </Container>
       </Modal>
     </>
   );

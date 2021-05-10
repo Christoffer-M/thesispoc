@@ -1,26 +1,28 @@
 .navigation {
-  .navItem {
-    font-size: 20px;
-    font-weight: 600;
-    cursor: pointer;
+  font-size: 20px;
+  font-weight: 600;
+  width: 100%;
 
-    a {
-      text-decoration: none;
-      color: antiquewhite;
-      -webkit-text-stroke: 0.1px;
-      -webkit-text-stroke-color: black;
-      transition: 0.3s;
-      &.selected {
-        color: orange;
-      }
-    }
-
-    :hover {
+  a {
+    text-decoration: none;
+    color: antiquewhite;
+    -webkit-text-stroke: 0.1px;
+    -webkit-text-stroke-color: black;
+    transition: 0.3s;
+    &.selected {
       color: orange;
     }
-    :active {
-      color: yellow;
-    }
+  }
+
+  :hover {
+    color: orange;
+  }
+  :active {
+    color: yellow;
+  }
+
+  .brand {
+    font-size: 30px;
   }
 }
 

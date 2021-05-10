@@ -1,11 +1,12 @@
 import "./Header.scss";
 import * as DB from "../../database/firebaseDB";
-import { Redirect, NavLink, Link } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import { useState, useEffect } from "react";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
-import Dropdown from "react-bootstrap/Dropdown";
+
+import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 
 const Header = () => {
@@ -37,7 +38,43 @@ const Header = () => {
 
   return (
     <Navbar expand="lg" className="header" fixed="top">
-      <Container className="d-flex">
+      <Container className="navigation d-flex flex-column justify-content-center">
+        <Row className="d-flex w-100">
+          <Col sm="auto" xs={6}>
+            <Navbar.Brand>
+              <NavLink
+                to={headers[0].path}
+                className="brand"
+                style={{ paddingLeft: 0 }}
+              >
+                Overview
+              </NavLink>
+            </Navbar.Brand>
+          </Col>
+          <Col sm="auto" xs={6}>
+            <Navbar.Toggle aria-controls="basic-navbar-nav" />
+          </Col>
+        </Row>
+
+        <Row className="d-flex w-100 align-items-center ">
+          <Navbar.Collapse id="basic-navbar-nav">
+            <Nav className="mr-auto">
+              {headers.map((ref, idx) => {
+                return (
+                  <Col xs="auto">
+                    <Nav.Link key={idx}>
+                      <NavLink to={ref.path} activeClassName="selected">
+                        {ref.name}
+                      </NavLink>
+                    </Nav.Link>
+                  </Col>
+                );
+              })}
+            </Nav>
+          </Navbar.Collapse>
+        </Row>
+      </Container>
+      {/* <Container className="d-flex">
         <Row className="navigation align-items-center w-100">
           {headers.map((ref, idx) => {
             return (
@@ -85,7 +122,7 @@ const Header = () => {
             </Dropdown>
           </Col>
         </Row>
-      </Container>
+      </Container> */}
     </Navbar>
   );
 };
