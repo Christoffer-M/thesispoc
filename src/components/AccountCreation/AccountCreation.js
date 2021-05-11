@@ -1,10 +1,8 @@
 import { useRef, useState } from "react";
 import "./AccountCreation.scss";
 import { uploadPicture, createNewUser } from "../../database/firebaseDB";
-import BounceLoader from "react-spinners/BounceLoader";
-import Container from "react-bootstrap/Container";
-import Row from "react-bootstrap/Row";
-import Col from "react-bootstrap/Col";
+import { BounceLoader } from "react-spinners";
+import { Container, Row, Col } from "react-bootstrap";
 
 const AccountCreation = () => {
   const nameInput = useRef(null);

@@ -1,0 +1,29 @@
+.h1Header {
+  margin-bottom: 30px;
+  padding-left: 40px;
+  text-align: left;
+}
+
+.titleContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+.EmployeeContainer {
+  margin-bottom: 30px;
+}
+
+@media only screen and (max-width: 992px) {
+  .h1Header {
+    margin-bottom: 15px;
+  }
+
+  .imageContainer {
+    justify-content: center;
+  }
+
+  .titleContainer {
+    justify-content: center;
+  }
+}

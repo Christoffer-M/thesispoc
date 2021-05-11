@@ -46,10 +46,15 @@ const Dashboard = () => {
 
   async function fillUserTasks() {
     console.log("Filling user Tasks");
-    await firebaseDB.getUserTasks().then((res) => {
-      res.sort(compare);
-      setTasks(res);
-    });
+    await firebaseDB
+      .getMyTasks()
+      .then((res) => {
+        res.sort(compare);
+        setTasks(res);
+      })
+      .catch((err) => {
+        console.error("Could not fill user Tasks", err);
+      });
     console.log("Done Filling user Tasks");
   }
 

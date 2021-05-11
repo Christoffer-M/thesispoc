@@ -2,10 +2,7 @@ import "./Header.scss";
 import * as DB from "../../database/firebaseDB";
 import { NavLink, Redirect, Link } from "react-router-dom";
 import { useState, useEffect } from "react";
-import Container from "react-bootstrap/Container";
-import Row from "react-bootstrap/Row";
-import Col from "react-bootstrap/Col";
-import { Nav, Navbar, NavDropdown } from "react-bootstrap";
+import { Container, Row, Col, Nav, Navbar, NavDropdown } from "react-bootstrap";
 
 import { isMobile } from "react-device-detect";
 
@@ -15,7 +12,7 @@ const Header = () => {
   const headers = [
     { name: "Dashboard", path: "/Dashboard" },
     { name: "Your Work", path: "/Work" },
-    { name: "Your Team", path: "/team" },
+    { name: "Your Team", path: "/Team" },
   ];
 
   const dropDownOptions = [{ name: "Log Out" }];
@@ -40,22 +37,25 @@ const Header = () => {
     <Navbar expand="lg" className="header" fixed="top">
       <Container className="navigation d-flex flex-column justify-content-center">
         <Row className="d-flex w-100">
-          <Col sm="auto" xs={6}>
+          <Col sm="auto" xs={12}>
             <Navbar.Toggle aria-controls="basic-navbar-nav" />
           </Col>
         </Row>
 
         <Row className="d-flex w-100 align-items-center ">
           <Navbar.Collapse id="basic-navbar-nav">
-            <Nav className="mr-auto align-items-center">
+            <Nav
+              className={
+                `${!isMobile ? "align-items-center" : "align-items-start"}` +
+                " mr-auto"
+              }
+            >
               {headers.map((ref, idx) => {
                 return (
-                  <Col xs="auto">
-                    <Nav.Link key={idx}>
-                      <NavLink to={ref.path} activeClassName="selected">
-                        {ref.name}
-                      </NavLink>
-                    </Nav.Link>
+                  <Col xs="auto" key={idx} className="headerLink">
+                    <NavLink to={ref.path} activeClassName="selected">
+                      {ref.name}
+                    </NavLink>
                   </Col>
                 );
               })}

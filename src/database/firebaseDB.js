@@ -148,14 +148,16 @@ export async function getEmployees() {
   return await db
     .collection("employee")
     .get()
-    .then((ref) => {
-      return ref.docs.map((doc) => {
-        return { id: doc.id, data: doc.data() };
-      });
+    .then(async (ref) => {
+      let arr = [];
+      for (const doc of ref.docs) {
+        if (doc.id !== getUser().uid) {
+          arr.push({ id: doc.id, data: doc.data() });
+        }
+      }
+      return arr;
     });
 }
-
-export async function getEmployee(id) {}
 
 export async function changeHelpRequest(id, bool) {
   return await db
@@ -170,7 +172,7 @@ export async function changeHelpRequest(id, bool) {
     });
 }
 
-export async function getUserTasks() {
+export async function getMyTasks() {
   return await db
     .collection("tasks")
     .get()
@@ -180,6 +182,25 @@ export async function getUserTasks() {
         console.log("returning tasks");
 
         if (doc.data().assigned === getUser().uid) {
+          arr.push({ id: doc.id, data: doc.data() });
+        }
+      });
+      return arr;
+    })
+    .catch((err) => {
+      console.error(err);
+    });
+}
+
+export async function getUserTasks(id) {
+  return await db
+    .collection("tasks")
+    .get()
+    .then((ref) => {
+      let arr = [];
+      ref.docs.forEach((doc) => {
+        console.log("returning tasks");
+        if (doc.data().assigned === id) {
           arr.push({ id: doc.id, data: doc.data() });
         }
       });

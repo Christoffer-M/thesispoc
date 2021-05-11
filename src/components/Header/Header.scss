@@ -13,6 +13,9 @@
       color: orange;
     }
   }
+  .headerLink {
+    padding-right: 30px;
+  }
 
   :hover {
     color: orange;
@@ -81,8 +84,15 @@
     right: 0px;
     left: 0px;
   }
-}
 
+  .headerLink {
+    padding-bottom: 20px;
+  }
+
+  .mr-auto {
+    padding: 0 10px !important;
+  }
+}
 .header {
   background: rgb(67, 206, 162);
   background: linear-gradient(
@@ -99,6 +109,8 @@
 
   .mobileLink {
     color: antiquewhite !important;
+    padding-bottom: 20px;
+    padding-top: 0px;
   }
   .userOptions_Container {
     ul {
