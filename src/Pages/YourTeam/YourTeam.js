@@ -17,7 +17,7 @@ const YourTeam = () => {
       setEmployees(employeeArray);
     }
     fetchData();
-  }, [console.log(employees)]);
+  }, []);
 
   return (
     <Container>
