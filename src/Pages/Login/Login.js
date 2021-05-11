@@ -7,6 +7,9 @@ import BounceLoader from "react-spinners/BounceLoader";
 import pic from "../../assets/buttons/btn_google_signin_light_focus_web@2x.png";
 import { Redirect } from "react-router";
 import AccountCreation from "../../components/AccountCreation/AccountCreation";
+import Container from "react-bootstrap/Container";
+import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col";
 
 const Login = () => {
   const [errorMessage, setErrorMessage] = useState("");
@@ -68,35 +71,45 @@ const Login = () => {
   }
 
   return (
-    <div className="mainLogin">
-      <div className="content">
+    <Container fluid className="mainLogin">
+      <Container className="content">
         <h1>Welcome to Overview</h1>
         {!newAccount ? (
           <>
-            {" "}
-            <div className="loginForm">
-              <input placeholder="E-mail" ref={emailInput}></input>
-              <input
-                placeholder="Password"
-                ref={passwordInput}
-                type="password"
-              ></input>
-              {showErrorText && <p className="errorText">{errorLoginText}</p>}
-              <button className="loginButton" onClick={normalLogin}>
-                Login
-              </button>
+            <Container className="loginForm">
+              <Col xs={12}>
+                <input placeholder="E-mail" ref={emailInput}></input>
+              </Col>
 
-              <button
-                onClick={() => {
-                  setNewAccount(!newAccount);
-                }}
-              >
-                Create new Account
-              </button>
-            </div>
-            <p>
-              Click the link below to log in with your google account instead
-            </p>
+              <Col xs={12}>
+                <input
+                  placeholder="Password"
+                  ref={passwordInput}
+                  type="password"
+                />
+              </Col>
+              <Col>
+                {showErrorText && <p className="errorText">{errorLoginText}</p>}
+                <button className="loginButton" onClick={normalLogin}>
+                  Login
+                </button>
+              </Col>
+              <Col>
+                <button
+                  onClick={() => {
+                    setNewAccount(!newAccount);
+                  }}
+                >
+                  Create new Account
+                </button>
+              </Col>
+            </Container>
+            <Col>
+              <p>
+                Click the link below to log in with your google account instead
+              </p>
+            </Col>
+
             {!loading && (
               <img
                 className="googleButton"
@@ -111,28 +124,30 @@ const Login = () => {
               <div className="errorText">
                 <p>{errorMessage}</p> <p>please try again</p>
               </div>
-            )}{" "}
+            )}
           </>
         ) : (
-          <div>
-            <AccountCreation />{" "}
-            <div className="goBackText">
-              <p>
-                Already have an account or wish to log in with Google instead?
-              </p>
-              <p
-                onClick={() => {
-                  setNewAccount(false);
-                }}
-                className="goBackLink"
-              >
-                Click here to go back
-              </p>
-            </div>
-          </div>
+          <Container>
+            <AccountCreation />
+            <Row className="goBackText">
+              <Col>
+                <p>
+                  Already have an account or wish to log in with Google instead?
+                </p>
+                <p
+                  onClick={() => {
+                    setNewAccount(false);
+                  }}
+                  className="goBackLink"
+                >
+                  Click here to go back
+                </p>
+              </Col>
+            </Row>
+          </Container>
         )}
-      </div>
-    </div>
+      </Container>
+    </Container>
   );
 };
 

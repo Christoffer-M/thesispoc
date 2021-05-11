@@ -2,6 +2,9 @@ import { useRef, useState } from "react";
 import "./AccountCreation.scss";
 import { uploadPicture, createNewUser } from "../../database/firebaseDB";
 import BounceLoader from "react-spinners/BounceLoader";
+import Container from "react-bootstrap/Container";
+import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col";
 
 const AccountCreation = () => {
   const nameInput = useRef(null);
@@ -63,40 +66,76 @@ const AccountCreation = () => {
   }
 
   return (
-    <div className="accountCreation">
-      <h3>Please enter the following information</h3>
-      <input placeholder="Full Name" ref={nameInput}></input>
-      <input placeholder="Email" ref={emailInput} type="email"></input>
-      <input placeholder="Password" ref={passwordInput} type="password"></input>
-      <input placeholder="Phone" ref={phoneInput} type="tel"></input>
-      <input placeholder="Title" ref={titleInput}></input>
-      <div className="pictureContainer">
-        <p>Please upload a profile picture by clicking the button below</p>
-        {picture !== null && <img src={picture} alt="profile_picture" />}
-        {loading && <BounceLoader color={"#185a9d"} />}
-        <label htmlFor="file-upload" className="custom-file-upload">
-          {picture === null ? "Upload Picture" : "Upload new picture"}
-        </label>
-        <p className="supportFormats">Supported Formats: .png/.jpeg</p>
-        <input
-          id="file-upload"
-          type="file"
-          ref={fileInput}
-          accept="image/png, image/jpeg"
-          onChange={setPicture}
-          onClick={() => {
-            setLoading(true);
-            if (picture !== null) {
-              setPictureFilePath(null);
-            }
-          }}
-        ></input>
-      </div>
-      {showErrorText && <p className="errorText">{errorText}</p>}
-      <button className="submit" onClick={createAccount}>
-        Create Account
-      </button>
-    </div>
+    <Container className="accountCreation d-flex align-items-center justify-content-center">
+      <Row className="d-flex justify-content-center">
+        <h3>Please enter the following information</h3>
+        <Col md={7}>
+          <input placeholder="Full Name" ref={nameInput}></input>
+        </Col>
+        <Col md={7}>
+          <input placeholder="Email" ref={emailInput} type="email"></input>
+        </Col>
+        <Col md={7}>
+          <input
+            placeholder="Password"
+            ref={passwordInput}
+            type="password"
+          ></input>
+        </Col>
+        <Col md={7}>
+          <input placeholder="Phone" ref={phoneInput} type="tel"></input>
+        </Col>
+        <Col md={7}>
+          <input placeholder="Title" ref={titleInput}></input>
+        </Col>
+
+        <Row xs={12} className="pictureContainer d-flex justify-content-center">
+          <Col xs={12}>
+            <p>Please upload a profile picture by clicking the button below</p>
+          </Col>
+
+          {picture !== null && (
+            <Col xs={12}>
+              <img src={picture} alt="profile_picture" />
+            </Col>
+          )}
+          {loading && (
+            <Col xs={12} className="d-flex justify-content-center">
+              <BounceLoader color={"#185a9d"} css="display: block;" />
+            </Col>
+          )}
+          <Col xs={12}>
+            {" "}
+            <label htmlFor="file-upload" className="custom-file-upload">
+              {picture === null ? "Upload Picture" : "Upload new picture"}
+            </label>
+          </Col>
+          <Col xs={12}>
+            <p className="supportFormats">Supported Formats: .png/.jpeg</p>
+            <input
+              id="file-upload"
+              type="file"
+              ref={fileInput}
+              accept="image/png, image/jpeg"
+              //onChange={setPicture}
+              onChange={setPicture}
+              onClick={() => {
+                setLoading(true);
+                if (picture !== null) {
+                  setPictureFilePath(null);
+                }
+              }}
+            ></input>
+          </Col>
+        </Row>
+        {showErrorText && <p className="errorText">{errorText}</p>}
+        <Col xs={12}>
+          <button className="submit" onClick={createAccount}>
+            Create Account
+          </button>
+        </Col>
+      </Row>
+    </Container>
   );
 };
 

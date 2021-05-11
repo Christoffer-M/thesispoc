@@ -1,12 +1,13 @@
 import "./Header.scss";
 import * as DB from "../../database/firebaseDB";
-import { Redirect, NavLink, Link } from "react-router-dom";
+import { NavLink, Redirect, Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
-import Dropdown from "react-bootstrap/Dropdown";
-import Navbar from "react-bootstrap/Navbar";
+import { Nav, Navbar, NavDropdown } from "react-bootstrap";
+
+import { isMobile } from "react-device-detect";
 
 const Header = () => {
   const [islogout, setLogout] = useState(false);
@@ -37,53 +38,99 @@ const Header = () => {
 
   return (
     <Navbar expand="lg" className="header" fixed="top">
-      <Container className="d-flex">
-        <Row className="navigation align-items-center w-100">
-          {headers.map((ref, idx) => {
-            return (
-              <Col className="navItem align-items-center" xs="auto" key={idx}>
-                <NavLink to={ref.path} activeClassName="selected">
-                  {ref.name}
-                </NavLink>
-              </Col>
-            );
-          })}
-          <Col className="d-flex justify-content-end">
-            <Dropdown>
-              <Dropdown.Toggle variant="success" id="dropdown-basic">
-                <img
-                  alt="userImage"
-                  src={userImage}
-                  className="img-fluid img-thumbnail userImage"
-                  id="dropdownMenuButton"
-                />
-              </Dropdown.Toggle>
-
-              <Dropdown.Menu>
-                {dropDownOptions.map((val, idx) => {
-                  if (val.name === "Log Out") {
-                    return (
-                      <Dropdown.Item
-                        onClick={() => {
-                          logout();
-                        }}
-                        key={idx}
-                      >
-                        Log Out
-                        {islogout && <Redirect to={{ pathname: "/" }} />}
-                      </Dropdown.Item>
-                    );
-                  } else {
-                    return (
-                      <Dropdown.Item key={idx}>
-                        <Link to={val.path}>{val.name}</Link>
-                      </Dropdown.Item>
-                    );
-                  }
-                })}
-              </Dropdown.Menu>
-            </Dropdown>
+      <Container className="navigation d-flex flex-column justify-content-center">
+        <Row className="d-flex w-100">
+          <Col sm="auto" xs={6}>
+            <Navbar.Toggle aria-controls="basic-navbar-nav" />
           </Col>
+        </Row>
+
+        <Row className="d-flex w-100 align-items-center ">
+          <Navbar.Collapse id="basic-navbar-nav">
+            <Nav className="mr-auto align-items-center">
+              {headers.map((ref, idx) => {
+                return (
+                  <Col xs="auto">
+                    <Nav.Link key={idx}>
+                      <NavLink to={ref.path} activeClassName="selected">
+                        {ref.name}
+                      </NavLink>
+                    </Nav.Link>
+                  </Col>
+                );
+              })}
+              {!isMobile ? (
+                <Col xs="auto">
+                  <NavDropdown
+                    id="basic-nav-dropdown"
+                    title={
+                      <img
+                        alt="userImage"
+                        src={userImage}
+                        className="img-fluid img-thumbnail userImage"
+                        id="dropdownMenuButton"
+                      />
+                    }
+                  >
+                    {dropDownOptions.map((val, idx) => {
+                      if (val.name === "Log Out") {
+                        return (
+                          <NavDropdown.Item
+                            onClick={() => {
+                              logout();
+                            }}
+                            key={idx}
+                          >
+                            Log Out
+                            {islogout && <Redirect to={{ pathname: "/" }} />}
+                          </NavDropdown.Item>
+                        );
+                      } else {
+                        return (
+                          <NavDropdown.Item key={idx}>
+                            <Link to={val.path}>{val.name}</Link>
+                          </NavDropdown.Item>
+                        );
+                      }
+                    })}
+                  </NavDropdown>
+                </Col>
+              ) : (
+                <Col xs="auto">
+                  {dropDownOptions.map((val, idx) => {
+                    if (val.name === "Log Out") {
+                      return (
+                        <Nav.Link
+                          onClick={() => {
+                            logout();
+                          }}
+                          key={idx}
+                          className="mobileLink"
+                        >
+                          Log Out
+                          {islogout && <Redirect to={{ pathname: "/" }} />}
+                        </Nav.Link>
+                      );
+                    } else {
+                      return (
+                        <Col xs="auto">
+                          <Nav.Link key={idx}>
+                            <NavLink
+                              to={val.path}
+                              activeClassName="selected"
+                              className="mobileLink"
+                            >
+                              {val.name}
+                            </NavLink>
+                          </Nav.Link>
+                        </Col>
+                      );
+                    }
+                  })}
+                </Col>
+              )}
+            </Nav>
+          </Navbar.Collapse>
         </Row>
       </Container>
     </Navbar>

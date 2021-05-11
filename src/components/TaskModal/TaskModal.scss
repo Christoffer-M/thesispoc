@@ -26,13 +26,10 @@ $color: rgba(222, 98, 98, 1);
     rgba(67, 206, 162, 1) 100%
   );
   color: white;
-  display: flex;
-  flex-direction: column;
-  width: 400px;
   .closeButton {
     position: absolute;
     right: 25px;
-    width: 35px;
+    width: 60px;
     cursor: pointer;
     transition: 0.3s;
     &:hover {
