@@ -126,13 +126,18 @@ const Dashboard = () => {
             );
           })}
         </Row>
-
         <Row className="team">
           <h2 className="mainHeadline">Your Team</h2>
           {team.map((item, idx) => {
             if (item.employee) {
               return (
-                <Col xl={4} md={6} xs={12} key={idx}>
+                <Col
+                  xl={4}
+                  md={6}
+                  xs={12}
+                  key={idx}
+                  className="employeeContainer"
+                >
                   <Employee
                     employee={item.employee}
                     key={idx}

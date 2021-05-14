@@ -57,6 +57,36 @@ export async function googleLogin() {
   return res;
 }
 
+export async function createSeverityTasks() {
+  await db
+    .collection("tasks")
+    .get()
+    .then((res) => {
+      for (const task of res.docs) {
+        if (task.get("severity") === undefined) {
+          const number = Math.floor(Math.random() * 11);
+          db.collection("tasks")
+            .doc(task.id)
+            .update({
+              severity: number,
+            })
+            .then(() => {
+              console.log("Successfully Created Severity Field");
+            })
+            .catch((err) => {
+              console.error("could not create severity field");
+              throw err;
+            });
+        } else {
+          console.log("Severity Field already exists");
+        }
+      }
+    })
+    .catch((err) => {
+      console.error(err);
+    });
+}
+
 export async function normalLogin(email, password) {
   console.log(typeof password);
   return await firebase
@@ -244,6 +274,7 @@ export async function addTask(
   description,
   helpneeded,
   assigned,
+  severity,
   progress
 ) {
   if (
@@ -262,6 +293,7 @@ export async function addTask(
         helpneeded: helpneeded,
         name: name,
         assigned: assigned,
+        severity: severity,
         progress: progress,
       })
       .then(() => {

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Modal from "react-modal";
 import addTaskButton from "../../assets/buttons/addButton.svg";
 import "./TaskModal.scss";
@@ -6,15 +6,16 @@ import closeButton from "../../assets/buttons/closeButton.svg";
 import * as firebaseDB from "../../database/firebaseDB";
 import Dropdown from "react-dropdown";
 import ClipLoader from "react-spinners/ClipLoader";
-import Container from "react-bootstrap/Container";
-import Row from "react-bootstrap/Row";
-import Col from "react-bootstrap/Col";
+import { Container, Row, Col } from "react-bootstrap";
 
 const TaskModal = ({ reloadTasks }) => {
   const [modalIsOpen, setIsOpen] = useState(false);
   const [employees, setEmployees] = useState([]);
   const [loading, setLoading] = useState(false);
   const [errorText, setErrorText] = useState("");
+  const [radioHelpNeed, setRadioHelpNeed] = useState(false);
+  const rangeInput = useRef(null);
+  const [rangeInputValue, setRangeInputValue] = useState(10);
   let taskAssigned = firebaseDB.getUser().uid;
 
   function afterOpenModal() {
@@ -25,9 +26,11 @@ const TaskModal = ({ reloadTasks }) => {
   function closeModal() {
     setErrorText("");
     setIsOpen(false);
+    setRadioHelpNeed(false);
   }
 
   function openModal() {
+    setRangeInputValue(10);
     setIsOpen(true);
   }
 
@@ -49,6 +52,7 @@ const TaskModal = ({ reloadTasks }) => {
     setLoading(true);
     const taskName = document.getElementById("taskName").value;
     const taskDescription = document.getElementById("taskDescription").value;
+    const severity = rangeInput.current.value;
     let helpNeeded;
 
     const progress = Math.floor(Math.random() * 101);
@@ -60,7 +64,14 @@ const TaskModal = ({ reloadTasks }) => {
     });
 
     firebaseDB
-      .addTask(taskName, taskDescription, helpNeeded, taskAssigned, progress)
+      .addTask(
+        taskName,
+        taskDescription,
+        helpNeeded,
+        taskAssigned,
+        severity,
+        progress
+      )
       .then(async () => {
         closeModal();
         await reloadTasks();
@@ -118,15 +129,83 @@ const TaskModal = ({ reloadTasks }) => {
                 />
                 <div className="helpInputs">
                   <label>Would you like help with this task? *</label>
-                  <div className="radioButtons">
-                    <div className="radioButton">
-                      <input type="radio" name="helpNeeded" value="true" /> Yes
-                    </div>
-                    <div className="radioButton">
-                      <input type="radio" name="helpNeeded" value="false" /> No
-                    </div>
-                  </div>
+                  <Row className="radioButtons">
+                    <Col className="radioButton">
+                      <input
+                        className="form-check-input"
+                        type="radio"
+                        name="helpNeeded"
+                        id="flexRadioDefault1"
+                        onChange={() => {
+                          setRadioHelpNeed(true);
+                        }}
+                      />
+                      <label
+                        className="form-check-label"
+                        htmlFor="flexRadioDefault1"
+                      >
+                        Yes
+                      </label>
+                    </Col>
+                    <Col className="radioButton">
+                      <input
+                        className="form-check-input"
+                        type="radio"
+                        name="helpNeeded"
+                        id="flexRadioDefault2"
+                        defaultChecked
+                        onChange={() => {
+                          setRadioHelpNeed(false);
+                        }}
+                      />
+                      <label
+                        className="form-check-label"
+                        htmlFor="flexRadioDefault2"
+                      >
+                        No
+                      </label>
+                    </Col>
+                  </Row>
                 </div>
+                {radioHelpNeed && (
+                  <Row>
+                    <Col xs={12} className="d-flex justify-content-center">
+                      <label>How difficult would you rate this task?</label>
+                    </Col>
+                    <Col xs={12} className="d-flex justify-content-center">
+                      <label>Very Easy = 0</label>
+                      <label>Very Difficult = 10</label>
+                    </Col>
+
+                    <Col className="d-flex flex-column align-items-center rangeInputContainer">
+                      <input
+                        ref={rangeInput}
+                        type="range"
+                        className="form-range"
+                        min="0"
+                        max="10"
+                        id="customRange2"
+                        onChange={(res) => {
+                          setRangeInputValue(res.target.value);
+                        }}
+                      />
+                      <h4 className="rangeInputValue">{rangeInputValue}</h4>
+                    </Col>
+
+                    <Col
+                      xs={12}
+                      className="d-flex flex-column align-items-center"
+                    >
+                      <label>
+                        Please describe in a few words, what you need help with
+                      </label>
+                      <input
+                        placeholder="Help Description"
+                        className="w-100"
+                      ></input>
+                    </Col>
+                  </Row>
+                )}
                 {!loading ? (
                   <div className="submit" onClick={createTask}>
                     Submit

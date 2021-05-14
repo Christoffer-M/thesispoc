@@ -27,6 +27,9 @@
 .team {
   text-align: left;
   padding-top: 10px;
+  .employeeContainer {
+    margin-bottom: 24px;
+  }
   .teamMembers {
     display: flex;
     flex-direction: row;

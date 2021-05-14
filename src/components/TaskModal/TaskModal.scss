@@ -1,4 +1,7 @@
+@import "../../../node_modules/bootstrap/scss/bootstrap-grid.scss";
+
 $color: rgba(222, 98, 98, 1);
+$form-range-thumb-active-bg: black !important;
 
 .addTaskButton {
   width: 30px;
@@ -11,10 +14,11 @@ $color: rgba(222, 98, 98, 1);
 }
 
 .modalClass {
+  width: 50%;
   position: absolute;
   left: 50%;
   right: auto;
-  top: calc(50% - 80px);
+  top: 350px;
   bottom: auto;
   margin-right: -50%;
   transform: translate(-50%, -50%);
@@ -25,6 +29,11 @@ $color: rgba(222, 98, 98, 1);
     rgba(24, 90, 157, 1) 0%,
     rgba(67, 206, 162, 1) 100%
   );
+
+  @include media-breakpoint-down(lg) {
+    width: 100%;
+  }
+
   color: white;
   .closeButton {
     position: absolute;
@@ -54,13 +63,23 @@ $color: rgba(222, 98, 98, 1);
     }
 
     input {
-      border-radius: 30px;
-      padding: 8px;
-      padding-left: 15px;
-      margin: 10px 0px;
-      border: transparent;
-      font-size: 16px;
-      outline: 0;
+      &:not(.form-check-input) {
+        border-radius: 30px;
+        padding: 8px;
+        padding-left: 15px;
+        margin: 10px 0px;
+        border: transparent;
+        font-size: 16px;
+        outline: 0;
+      }
+    }
+    .rangeInputContainer {
+      margin-bottom: 20px;
+      .form-range {
+        margin-top: 0px !important;
+        margin-bottom: 0px !important;
+        padding-bottom: 0px !important;
+      }
     }
 
     .dropDown {
@@ -133,6 +152,7 @@ $color: rgba(222, 98, 98, 1);
     }
 
     .submit {
+      margin-top: 20px;
       display: inline-block;
       padding: 0.75rem 1.25rem;
       border-radius: 10rem;
@@ -195,6 +215,8 @@ $color: rgba(222, 98, 98, 1);
         flex-direction: row;
         margin-bottom: 20px;
         .radioButton {
+          display: flex;
+          align-items: center;
           margin-right: 20px;
         }
       }
