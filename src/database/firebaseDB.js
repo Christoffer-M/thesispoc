@@ -189,6 +189,21 @@ export async function getEmployees() {
     });
 }
 
+export async function createTaskHelp(id, severity, description) {
+  return await db
+    .collection("tasks")
+    .doc(id)
+    .update({ severity: severity, helpDescription: description })
+    .then(() => {
+      console.log("Task Help succesfully created!");
+      return true;
+    })
+    .catch((err) => {
+      console.error(err);
+      throw err;
+    });
+}
+
 export async function changeHelpRequest(id, bool) {
   return await db
     .collection("tasks")
@@ -209,8 +224,6 @@ export async function getMyTasks() {
     .then((ref) => {
       let arr = [];
       ref.docs.forEach((doc) => {
-        console.log("returning tasks");
-
         if (doc.data().assigned === getUser().uid) {
           arr.push({ id: doc.id, data: doc.data() });
         }
@@ -229,8 +242,8 @@ export async function getUserTasks(id) {
     .then((ref) => {
       let arr = [];
       ref.docs.forEach((doc) => {
-        console.log("returning tasks");
         if (doc.data().assigned === id) {
+          console.log(id);
           arr.push({ id: doc.id, data: doc.data() });
         }
       });

@@ -6,10 +6,12 @@ import "./Task.scss";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
+import HelpModal from "../HelpModal/HelpModal";
+import CustomButton from "../Button/CustomButton";
 
 const Task = (props) => {
   const [helpNeed, setHelpNeed] = useState("");
-  const [helpText, setHelpText] = useState("Request Help");
+  const [, setHelpDescription] = useState(props.helpDescription);
   const [modalIsOpen, setIsOpen] = useState(false);
 
   const deleteTask = async () => {
@@ -35,10 +37,8 @@ const Task = (props) => {
     Modal.setAppElement("#root");
     if (props.helpNeed) {
       setHelpNeed("Yes");
-      setHelpText("Remove help Request");
     } else {
       setHelpNeed("No");
-      setHelpText("Request help");
     }
   }, [props.helpNeed]);
 
@@ -53,60 +53,53 @@ const Task = (props) => {
           onAfterOpen={afterOpenModal}
         >
           <h2>Are you sure you wish to delete this task?</h2>
-          <div className="modalButtons">
-            <button onClick={deleteTask}>Yes, I am sure</button>
-            <button onClick={closeModal}>No, take me back</button>
-          </div>
-        </Modal>
-        <Container className="d-flex flex-column justify-content-between largeTaskContainer">
-          <Row>
+          <Row className="modalButtons">
+            <Col xs={6}>
+              <CustomButton
+                onClick={deleteTask}
+                buttonText="Yes, I am sure"
+              ></CustomButton>
+            </Col>
             <Col>
+              <CustomButton
+                color="blue"
+                onClick={closeModal}
+                buttonText="No, take me back"
+              ></CustomButton>
+            </Col>
+          </Row>
+        </Modal>
+        <Container className="d-flex flex-column justify-content-between largeTaskContainer ">
+          <Row className="h-100">
+            <Col xs={12}>
               <h3>{props.name}</h3>
             </Col>
-          </Row>
 
-          <Row>
-            <Col>
+            <Col xs={12}>
               <h4>Description: </h4>
               <p>{props.description}</p>
-            </Col>
-          </Row>
 
-          <Row className="progressRow">
-            <Col>
-              <h4>Progress: </h4>
-              <ProgressBar completed={props.progress} />
-            </Col>
-          </Row>
+              <Col className="progressRow" xs={12}>
+                <h4>Progress: </h4>
+                <ProgressBar completed={props.progress} />
+              </Col>
 
-          <Row>
-            <Col>
               <h4>Help requested: {helpNeed} </h4>
             </Col>
-          </Row>
-          <Row className="d-flex justify-content-between">
-            <Col sm={12}>
-              <button
-                className="button request"
-                onClick={async () => {
-                  if (helpNeed === "Yes") {
-                    firebaseDB.changeHelpRequest(props.id, false);
-                    setHelpText("Request help");
-                    setHelpNeed("No");
-                  } else {
-                    firebaseDB.changeHelpRequest(props.id, true);
-                    setHelpText("Remove Request Help");
-                    setHelpNeed("Yes");
-                  }
-                }}
-              >
-                {helpText}
-              </button>
-            </Col>
-            <Col className="d-flex buttonCol" sm={12}>
-              <button className="button delete" onClick={openModal}>
-                Delete Task
-              </button>
+
+            <Col xs={12} className="d-flex justify-content-end flex-column">
+              <HelpModal
+                helpNeeded={props.helpNeed}
+                taskId={props.id}
+                setHelpTextMethod={setHelpNeed}
+                setHelpDescription={setHelpDescription}
+              />
+
+              <CustomButton
+                onClick={openModal}
+                buttonText="Delete Task"
+                style={{ paddingTop: 8, paddingBottom: 8, marginTop: 10 }}
+              />
             </Col>
           </Row>
         </Container>

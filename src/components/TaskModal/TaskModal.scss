@@ -1,7 +1,6 @@
 @import "../../../node_modules/bootstrap/scss/bootstrap-grid.scss";
 
 $color: rgba(222, 98, 98, 1);
-$form-range-thumb-active-bg: black !important;
 
 .addTaskButton {
   width: 30px;
@@ -24,11 +23,7 @@ $form-range-thumb-active-bg: black !important;
   transform: translate(-50%, -50%);
   padding: 20px;
   border-radius: 20px;
-  background: linear-gradient(
-    90deg,
-    rgba(24, 90, 157, 1) 0%,
-    rgba(67, 206, 162, 1) 100%
-  );
+  background: #19547b;
 
   @include media-breakpoint-down(lg) {
     width: 100%;
@@ -242,7 +237,6 @@ $form-range-thumb-active-bg: black !important;
 @media only screen and (max-width: 992px) {
   .modalClass {
     position: relative;
-
     top: 0px;
     right: 0;
     left: 0;

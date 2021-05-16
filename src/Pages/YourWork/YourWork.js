@@ -19,7 +19,7 @@ const YourWork = () => {
     firebase.auth().onAuthStateChanged(async (user) => {
       if (user) {
         //Set user Tasks
-        await fillUserTasks();
+        await fillUserTasks(user.uid);
 
         setUserFound(true);
         setLoading(false);
@@ -29,9 +29,9 @@ const YourWork = () => {
     });
   };
 
-  async function fillUserTasks() {
+  async function fillUserTasks(id) {
     console.log("Filling user Tasks");
-    await firebaseDB.getUserTasks().then((res) => {
+    await firebaseDB.getUserTasks(id).then((res) => {
       res.sort(compare);
       setTasks(res);
     });
@@ -71,7 +71,7 @@ const YourWork = () => {
         <Row>
           {tasks.map((val, idx) => {
             return (
-              <Col xl={6} sm={12} className="taskCol" key={idx}>
+              <Col lg={4} xs={12} className="taskCol" key={idx}>
                 <Task
                   large={true}
                   id={val.id}
