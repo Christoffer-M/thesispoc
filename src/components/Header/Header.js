@@ -8,7 +8,7 @@ import { isMobile } from "react-device-detect";
 
 const Header = () => {
   const [islogout, setLogout] = useState(false);
-  const [userImage, setImage] = useState("");
+  const [userImage, setImage] = useState(null);
   const headers = [
     { name: "Dashboard", path: "/Dashboard" },
     { name: "Your Work", path: "/Work" },
@@ -26,11 +26,13 @@ const Header = () => {
   };
 
   useEffect(() => {
-    setTimeout(() => {
+    const mytimer = setInterval(() => {
       if (DB.getUser() !== null) {
-        setImage(DB.getUser().photoURL);
+        console.log("running");
+        setImage(DB.getUserPhotoURL());
+        clearInterval(mytimer);
       }
-    }, 1000);
+    }, 500);
   }, []);
 
   return (

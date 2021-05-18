@@ -29,6 +29,7 @@ export async function googleLogin() {
     .signInWithPopup(provider)
     .then(async (res) => {
       let found = false;
+      const newUrl = res.user.photoURL.toString().replace("s96-c", "s200-c");
       (await getEmployees()).forEach((val) => {
         if (val.id === res.user.uid) {
           found = true;
@@ -40,7 +41,7 @@ export async function googleLogin() {
           res.user.email,
           res.user.uid,
           res.user.displayName,
-          res.user.photoURL,
+          newUrl,
           res.user.phoneNumber,
           res.user.displayName
         );
@@ -282,6 +283,15 @@ export function getUser() {
   return firebase.auth().currentUser;
 }
 
+export function getUserPhotoURL() {
+  let photoURL = getUser().photoURL;
+  if (getUser().photoURL.includes("https://lh3.googleusercontent.com")) {
+    return photoURL.toString().replace("s96-c", "s200-c");
+  } else {
+    return photoURL;
+  }
+}
+
 export async function addTask(
   name,
   description,
@@ -297,6 +307,8 @@ export async function addTask(
     assigned !== null &&
     progress !== null
   ) {
+    if (severity) {
+    }
     console.log("hello there");
     await db
       .collection("tasks")

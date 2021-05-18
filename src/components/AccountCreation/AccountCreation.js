@@ -3,6 +3,7 @@ import "./AccountCreation.scss";
 import { uploadPicture, createNewUser } from "../../database/firebaseDB";
 import { BounceLoader } from "react-spinners";
 import { Container, Row, Col } from "react-bootstrap";
+import ImageTools from "./ImageTools";
 
 const AccountCreation = () => {
   const nameInput = useRef(null);
@@ -15,10 +16,23 @@ const AccountCreation = () => {
   const [showErrorText, setShowErrorText] = useState(false);
   const [errorText, setErrorText] = useState("");
   const [loading, setLoading] = useState(false);
+  let pictureBlob = null;
 
   function setPicture() {
-    setPictureFilePath(URL.createObjectURL(fileInput.current.files[0]));
-    setLoading(false);
+    //setPictureFilePath(URL.createObjectURL(fileInput.current.files[0]));
+    ImageTools.resize(
+      fileInput.current.files[0],
+      {
+        width: 300,
+        height: 300,
+      },
+      function (blob, didItResize) {
+        // didItResize will be true if it managed to resize it, otherwise false (and will return the original file as 'blob')
+        setPictureFilePath(URL.createObjectURL(blob));
+        pictureBlob = blob;
+        // you can also now upload this blob using an XHR.
+      }
+    );
   }
 
   async function createAccount() {
@@ -36,9 +50,9 @@ const AccountCreation = () => {
       picture !== null
     ) {
       const fileRef = await uploadPicture(
-        fileInput.current.files[0],
-        fileInput.current.files[0].size,
-        fileInput.current.files[0].type
+        pictureBlob,
+        pictureBlob.size,
+        pictureBlob.type
       );
       const imageURL = await fileRef.getDownloadURL();
       await createNewUser(name, email, phone, password, title, imageURL)
@@ -103,7 +117,6 @@ const AccountCreation = () => {
             </Col>
           )}
           <Col xs={12}>
-            {" "}
             <label htmlFor="file-upload" className="custom-file-upload">
               {picture === null ? "Upload Picture" : "Upload new picture"}
             </label>
@@ -115,13 +128,9 @@ const AccountCreation = () => {
               type="file"
               ref={fileInput}
               accept="image/png, image/jpeg"
-              //onChange={setPicture}
               onChange={setPicture}
               onClick={() => {
                 setLoading(true);
-                if (picture !== null) {
-                  setPictureFilePath(null);
-                }
               }}
             ></input>
           </Col>

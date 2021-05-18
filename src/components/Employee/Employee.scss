@@ -1,79 +1,64 @@
+@import "../../../node_modules/bootstrap/scss/bootstrap-grid.scss";
+
 .mainEmployee {
   padding: 15px 35px;
   box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.25);
   border-radius: 30px;
   height: 100%;
 
-  .employeeData {
-    .progressBarContainer {
-      margin-bottom: 20px;
-    }
-    .contactLink {
-      margin-bottom: 0px;
-    }
-    .employeeMeta {
-      margin: 20px 0px;
-      @media only screen and (max-width: 992px) {
-        h2 {
-          text-align: center;
-        }
-      }
-      .imageCol {
-        padding-left: 0px;
-        padding-right: 0px;
+  .contactLink {
+    padding-top: 5px;
 
-        img {
-          width: 150px;
-          height: 150px;
-          border-radius: 90px;
-          object-fit: cover;
-          margin-right: 20px;
-          border: 1px solid black;
-          padding-left: 0px;
-        }
-      }
-    }
-    .helpRow {
-      .btn {
-        position: relative;
-        padding-left: 45px;
-        font-size: 17px;
-        border-radius: 20px;
-        .helpIcon {
-          position: absolute;
-          left: 5px;
-          bottom: 2px;
-          height: 50px;
-        }
-      }
-    }
-    .currentWork {
-      display: flex;
-      flex-direction: column;
-      width: 100%;
+    margin-bottom: 0px;
 
-      p {
-        margin-top: 0px;
+    svg {
+      height: 30px;
+    }
+  }
+  .progressBarContainer {
+    margin-bottom: 20px;
+  }
+
+  .employeeMeta {
+    margin: 20px 0px;
+    @media only screen and (max-width: 992px) {
+      h2 {
+        text-align: center;
       }
-      h3 {
-        margin-top: 0px;
+    }
+    .imageCol {
+      padding-left: 0px;
+      padding-right: 0px;
+
+      img {
+        border-radius: 90px;
       }
     }
   }
-}
+  .helpRow {
+    .btn {
+      position: relative;
+      padding-left: 45px;
+      font-size: 17px;
+      border-radius: 20px;
+      .helpIcon {
+        position: absolute;
+        left: 5px;
+        bottom: 2px;
+        height: 50px;
+      }
+    }
+  }
+  .currentWork {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
 
-.mainEmployeeTeam {
-  box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.25);
-  border-radius: 30px;
-  padding: 20px 0;
-  .imageContainer {
-    img {
-      width: 150px;
-      height: 150px;
-      border-radius: 90px;
-      object-fit: cover;
-      border: 1px solid black;
-      padding-left: 0px;
+    p {
+      margin-top: 0px;
+    }
+    h3 {
+      margin-top: 0px;
     }
   }
   .helpIconContainer {
@@ -90,19 +75,14 @@
       }
     }
   }
+}
 
-  .progressBarContainer {
-    margin-top: 15px;
-    .progressBar {
-      margin-bottom: 15px;
-    }
-  }
-
-  @media only screen and (max-width: 992px) {
-    .row {
-      padding-right: 0px;
+@include media-breakpoint-down(lg) {
+  .mainEmployee {
+    .employeeMeta {
+      margin-top: 30px;
       .titleContainer {
-        text-align: left;
+        align-items: center;
       }
     }
   }
