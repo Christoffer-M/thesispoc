@@ -26,13 +26,10 @@ const Header = () => {
   };
 
   useEffect(() => {
-    const mytimer = setInterval(() => {
-      if (DB.getUser() !== null) {
-        console.log("running");
-        setImage(DB.getUserPhotoURL());
-        clearInterval(mytimer);
-      }
-    }, 500);
+    if (DB.getUser() !== null) {
+      const image = DB.getUserPhotoURL();
+      setImage(image);
+    }
   }, []);
 
   return (

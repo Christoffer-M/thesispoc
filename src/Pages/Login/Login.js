@@ -10,15 +10,18 @@ import AccountCreation from "../../components/AccountCreation/AccountCreation";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
+import Loading from "../Loading/Loading";
 
 const Login = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const [loading, setLoading] = useState(false);
+  const [pageLoading, setPageLoading] = useState(true);
   const [redirect, setRedirect] = useState(false);
   const [newAccount, setNewAccount] = useState(false);
   const [errorLoginText, setErrorLoginText] = useState(
     "Please enter both email and password field"
   );
+  const [userFound, setUserFound] = useState(false);
   const [showErrorText, setShowErrorText] = useState(false);
   const emailInput = useRef(null);
   const passwordInput = useRef(null);
@@ -26,7 +29,11 @@ const Login = () => {
   useEffect(() => {
     firebase.auth().onAuthStateChanged((user) => {
       if (user) {
-        setRedirect(true);
+        DB.setUser(user);
+        setPageLoading(false);
+        setUserFound(true);
+      } else {
+        setPageLoading(false);
       }
     });
   }, []);
@@ -69,86 +76,95 @@ const Login = () => {
         });
     }
   }
+  if (pageLoading) {
+    return <Loading />;
+  } else if (userFound) {
+    return <Redirect to={{ pathname: "/Dashboard" }} />;
+  } else {
+    return (
+      <Container fluid className="mainLogin">
+        <Container className="content">
+          <h1>Welcome to Overview</h1>
+          {!newAccount ? (
+            <>
+              <Container className="loginForm">
+                <Col xs={12}>
+                  <input placeholder="E-mail" ref={emailInput}></input>
+                </Col>
 
-  return (
-    <Container fluid className="mainLogin">
-      <Container className="content">
-        <h1>Welcome to Overview</h1>
-        {!newAccount ? (
-          <>
-            <Container className="loginForm">
-              <Col xs={12}>
-                <input placeholder="E-mail" ref={emailInput}></input>
-              </Col>
-
-              <Col xs={12}>
-                <input
-                  placeholder="Password"
-                  ref={passwordInput}
-                  type="password"
-                />
-              </Col>
-              <Col>
-                {showErrorText && <p className="errorText">{errorLoginText}</p>}
-                <button className="loginButton" onClick={normalLogin}>
-                  Login
-                </button>
-              </Col>
-              <Col>
-                <button
-                  onClick={() => {
-                    setNewAccount(!newAccount);
-                  }}
-                >
-                  Create new Account
-                </button>
-              </Col>
-            </Container>
-            <Col>
-              <p>
-                Click the link below to log in with your google account instead
-              </p>
-            </Col>
-
-            {!loading && (
-              <img
-                className="googleButton"
-                src={pic}
-                onClick={googleLogin}
-                alt="GoogleButton"
-              />
-            )}
-            {redirect && <Redirect to={{ pathname: "/Dashboard" }} />}
-            <BounceLoader color={"#ffffff"} loading={loading} />
-            {errorMessage !== "" && (
-              <div className="errorText">
-                <p>{errorMessage}</p> <p>please try again</p>
-              </div>
-            )}
-          </>
-        ) : (
-          <Container>
-            <AccountCreation />
-            <Row className="goBackText">
+                <Col xs={12}>
+                  <input
+                    placeholder="Password"
+                    ref={passwordInput}
+                    type="password"
+                  />
+                </Col>
+                <Col>
+                  {showErrorText && (
+                    <p className="errorText">{errorLoginText}</p>
+                  )}
+                  <button className="loginButton" onClick={normalLogin}>
+                    Login
+                  </button>
+                </Col>
+                <Col>
+                  <button
+                    onClick={() => {
+                      setNewAccount(!newAccount);
+                    }}
+                  >
+                    Create new Account
+                  </button>
+                </Col>
+              </Container>
               <Col>
                 <p>
-                  Already have an account or wish to log in with Google instead?
-                </p>
-                <p
-                  onClick={() => {
-                    setNewAccount(false);
-                  }}
-                  className="goBackLink"
-                >
-                  Click here to go back
+                  Click the link below to log in with your google account
+                  instead
                 </p>
               </Col>
-            </Row>
-          </Container>
-        )}
+
+              {!loading && (
+                <img
+                  className="googleButton"
+                  src={pic}
+                  onClick={googleLogin}
+                  alt="GoogleButton"
+                />
+              )}
+              {redirect && <Redirect to={{ pathname: "/Dashboard" }} />}
+              <BounceLoader color={"#ffffff"} loading={loading} />
+              {errorMessage !== "" && (
+                <div className="errorText">
+                  <p>{errorMessage}</p> <p>please try again</p>
+                </div>
+              )}
+            </>
+          ) : (
+            <Container>
+              <AccountCreation />
+              <Row className="goBackText">
+                <Col>
+                  <p>
+                    Already have an account or wish to log in with Google
+                    instead?
+                  </p>
+                  <p
+                    onClick={() => {
+                      setNewAccount(false);
+                    }}
+                    className="goBackLink"
+                  >
+                    Click here to go back
+                  </p>
+                </Col>
+              </Row>
+            </Container>
+          )}
+        </Container>
       </Container>
-    </Container>
-  );
+    );
+  }
 };
 
 export default Login;

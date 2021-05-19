@@ -22,19 +22,30 @@ if (!firebase.apps.length) {
 
 const db = firebase.firestore();
 
+export let currentUser = null;
+
 export async function googleLogin() {
   const provider = new firebase.auth.GoogleAuthProvider();
   const res = await firebase
     .auth()
     .signInWithPopup(provider)
     .then(async (res) => {
+      currentUser = res.user;
       let found = false;
       const newUrl = res.user.photoURL.toString().replace("s96-c", "s200-c");
-      (await getEmployees()).forEach((val) => {
-        if (val.id === res.user.uid) {
-          found = true;
-        }
-      });
+      await getEmployeeIDs()
+        .then((val) => {
+          for (let index = 0; index < val.length; index++) {
+            if (val[index].id === res.user.uid) {
+              found = true;
+            }
+          }
+        })
+        .catch((err) => {
+          console.error("Could not get employees");
+          throw err;
+        });
+
       if (!found) {
         console.log("Does not contain user, creating new!");
         await createEmployee(
@@ -45,11 +56,11 @@ export async function googleLogin() {
           res.user.phoneNumber,
           res.user.displayName
         );
+        return "success";
       } else {
         console.log("Already contains user, will only log in.");
+        return "success";
       }
-
-      return "success";
     })
     .catch((error) => {
       return [{ result: "error", message: error.message, code: error.code }];
@@ -94,6 +105,7 @@ export async function normalLogin(email, password) {
     .auth()
     .signInWithEmailAndPassword(email, password)
     .then((userCredential) => {
+      currentUser = userCredential.user;
       // Signed in
       // ...
       console.log("SUCCESSFULLY LOGGED IN");
@@ -173,6 +185,19 @@ export async function uploadPicture(file, size, type) {
 
   await fileRef.put(file);
   return fileRef;
+}
+
+export async function getEmployeeIDs() {
+  return await db
+    .collection("employee")
+    .get()
+    .then(async (ref) => {
+      let arr = [];
+      for (const doc of ref.docs) {
+        arr.push({ id: doc.id });
+      }
+      return arr;
+    });
 }
 
 export async function getEmployees() {
@@ -271,6 +296,7 @@ export async function logout() {
     .auth()
     .signOut()
     .then(() => {
+      currentUser = null;
       return true;
     })
     .catch((error) => {
@@ -280,7 +306,11 @@ export async function logout() {
 }
 
 export function getUser() {
-  return firebase.auth().currentUser;
+  return currentUser;
+}
+
+export function setUser(user) {
+  currentUser = user;
 }
 
 export function getUserPhotoURL() {
@@ -335,4 +365,15 @@ export async function addTask(
 
 export async function deleteTask(id) {
   await db.collection("tasks").doc(id).delete();
+}
+
+class User {
+  constructor(userID, name, email, phone, title, imageURL) {
+    this.userID = userID;
+    this.name = name;
+    this.email = email;
+    this.phone = phone;
+    this.title = title;
+    this.imageURL = imageURL;
+  }
 }

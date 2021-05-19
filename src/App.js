@@ -14,7 +14,7 @@ function App() {
 
   return (
     <div className="app">
-      {currentPath !== "/" && <Header />}
+      {currentPath !== "/" ? <Header /> : <></>}
       <Container fluid className="appContainer">
         <Switch>
           <Route exact path="/" component={Login}></Route>

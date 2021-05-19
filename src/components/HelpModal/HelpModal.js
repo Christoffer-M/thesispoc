@@ -1,5 +1,4 @@
 import "./HelpModal.scss";
-
 import Modal from "react-modal";
 import closeButton from "../../assets/buttons/closeButton.svg";
 import { ClipLoader } from "react-spinners";
@@ -15,9 +14,9 @@ const HelpModal = ({
   setHelpDescription,
 }) => {
   const [modalIsOpen, setIsOpen] = useState(false);
-  const [helpNeed, setHelpNeed] = useState("");
-  const [helpText, setHelpText] = useState("Request Help");
-  const [errorText, setErrorText] = useState("");
+  const [helpNeed, setHelpNeed] = useState(null);
+  const [helpText, setHelpText] = useState(null);
+  const [errorText, setErrorText] = useState(null);
   const rangeInput = useRef(null);
   const descriptionInput = useRef(null);
   const [loading, setLoading] = useState(false);
@@ -28,6 +27,8 @@ const HelpModal = ({
   }
 
   function closeModal() {
+    setErrorText(null);
+
     setIsOpen(false);
   }
 
@@ -54,23 +55,27 @@ const HelpModal = ({
   }
 
   async function uploadHelpRequest() {
-    setLoading(true);
     const range = rangeInput.current.value;
     const description = descriptionInput.current.value;
-    await firebaseDB
-      .createTaskHelp(taskId, range, description)
-      .then(() => {
-        setLoading(false);
-        firebaseDB.changeHelpRequest(taskId, true);
-        setHelpText("Remove Request Help");
-        setHelpNeed("Yes");
-        setHelpTextMethod("Yes");
-        closeModal();
-      })
-      .catch((err) => {
-        console.error(err);
-        setErrorText(err);
-      });
+    if (range !== "" && description !== "") {
+      setLoading(true);
+      await firebaseDB
+        .createTaskHelp(taskId, range, description)
+        .then(() => {
+          setLoading(false);
+          firebaseDB.changeHelpRequest(taskId, true);
+          setHelpText("Remove Request Help");
+          setHelpNeed("Yes");
+          setHelpTextMethod("Yes");
+          closeModal();
+        })
+        .catch((err) => {
+          console.error(err);
+          setErrorText(err);
+        });
+    } else {
+      setErrorText("Please fill all the fields");
+    }
   }
 
   useEffect(() => {
@@ -80,7 +85,7 @@ const HelpModal = ({
       setHelpText("Remove help Request");
     } else {
       setHelpNeed("No");
-      setHelpText("Request help");
+      setHelpText("Request Advice");
     }
   }, [helpNeeded]);
 
@@ -120,7 +125,7 @@ const HelpModal = ({
             <h1
               style={{ textAlign: "center", marginBottom: 20, fontWeight: 600 }}
             >
-              Request help
+              Request Advice
             </h1>
             <Col xs={12} className="d-flex justify-content-center">
               <label>How difficult would you rate this task?</label>
@@ -155,13 +160,10 @@ const HelpModal = ({
                 ref={descriptionInput}
               ></input>
             </Col>
-            <Col xs={12} className="d-flex justify-content-center">
+            <Col xs={12} className="d-flex justify-content-center flex-column">
               {!loading ? (
                 <CustomButton onClick={uploadHelpRequest} buttonText="Submit" />
               ) : (
-                // <div className="submit" onClick={uploadHelpRequest}>
-                //   Submit
-                // </div>
                 <button className="submit">
                   <ClipLoader size={12} color="#fff" />
                 </button>

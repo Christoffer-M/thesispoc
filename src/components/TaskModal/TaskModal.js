@@ -52,16 +52,18 @@ const TaskModal = ({ reloadTasks }) => {
     setLoading(true);
     const taskName = document.getElementById("taskName").value;
     const taskDescription = document.getElementById("taskDescription").value;
-    const severity = rangeInput.current.value;
-    let helpNeeded;
-
-    const progress = Math.floor(Math.random() * 101);
-
+    let helpNeeded = false;
     document.getElementsByName("helpNeeded").forEach((res) => {
-      if (res.checked) {
-        helpNeeded = res.value === "true";
+      if (res.id === "Yes" && res.checked) {
+        helpNeeded = true;
       }
     });
+    let severity = null;
+    if (helpNeeded) {
+      severity = rangeInput.current.value;
+    }
+
+    const progress = Math.floor(Math.random() * 101);
 
     firebaseDB
       .addTask(
@@ -72,11 +74,13 @@ const TaskModal = ({ reloadTasks }) => {
         severity,
         progress
       )
-      .then(async () => {
+      .then(async (val) => {
+        console.log(val);
         closeModal();
         await reloadTasks();
       })
       .catch((err) => {
+        console.log("Error");
         setErrorText(err.toString());
       });
 
@@ -135,7 +139,7 @@ const TaskModal = ({ reloadTasks }) => {
                         className="form-check-input"
                         type="radio"
                         name="helpNeeded"
-                        id="flexRadioDefault1"
+                        id="Yes"
                         onChange={() => {
                           setRadioHelpNeed(true);
                         }}
@@ -152,7 +156,7 @@ const TaskModal = ({ reloadTasks }) => {
                         className="form-check-input"
                         type="radio"
                         name="helpNeeded"
-                        id="flexRadioDefault2"
+                        id="No"
                         defaultChecked
                         onChange={() => {
                           setRadioHelpNeed(false);

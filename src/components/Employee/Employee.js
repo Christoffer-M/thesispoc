@@ -1,6 +1,6 @@
 import "./Employee.scss";
 import ProgressBar from "../Progress-Bar/Progress-Bar";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ReactComponent as MailIcon } from "../../assets/icons/MailIcon.svg";
 import { ReactComponent as MessageIcon } from "../../assets/icons/MessageIcon.svg";
 import { ReactComponent as PhoneIcon } from "../../assets/icons/phoneIcon.svg";
@@ -25,7 +25,6 @@ const Employee = (props) => {
 
   let task;
   if (props.task !== null && !props.isTeamPage) {
-    console.log(props.task.name);
     task = {
       description: props.task.name,
       progress: props.task.progress,
@@ -34,7 +33,6 @@ const Employee = (props) => {
   }
 
   useEffect(() => {
-    console.log(props.task);
     if (props.task !== null && !props.isTeamPage) {
       if (props.task.helpneeded) {
         setHelp("Yes");
@@ -53,16 +51,13 @@ const Employee = (props) => {
       async function fetchData() {
         await getUserTasks(emp.id).then((res) => {
           const tasks = res.map((task, idx) => {
-            console.log(task);
             return task;
           });
-          console.log(tasks);
           setUserTasks(tasks);
         });
       }
       fetchData();
     }
-    console.log(phone);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [emp.email, emp.phone, props.isTeamPage]);
 
@@ -177,7 +172,7 @@ const Employee = (props) => {
           {userTasks.length > 0 ? (
             userTasks.map((task, idx) => {
               return (
-                <>
+                <React.Fragment key={idx}>
                   {task.data.helpneeded && (
                     <Col xs={2} className="helpIconContainer">
                       <img src={helpIcon} className="helpIcon" alt="helpIcon" />
@@ -186,13 +181,12 @@ const Employee = (props) => {
 
                   <Col
                     xs={isHelpNeeded(task.data.helpneeded)}
-                    key={idx}
                     className="progressBar"
                   >
                     <h6>{task.data.name}</h6>
                     <ProgressBar completed={task.data.progress}></ProgressBar>
                   </Col>
-                </>
+                </React.Fragment>
               );
             })
           ) : (

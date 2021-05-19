@@ -1,6 +1,5 @@
 import * as firebaseDB from "../../database/firebaseDB";
-import firebase from "firebase/app";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import "./Dashboard.scss";
 import Task from "../../components/Task/Task";
 import { Redirect } from "react-router";
@@ -11,32 +10,35 @@ import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 
-const Dashboard = () => {
+let userID;
+
+const Dashboard = (props) => {
   const [tasks, setTasks] = useState([]);
   const [team, setTeam] = useState([]);
   const [userImage, setImage] = useState("");
   const [loading, setLoading] = useState(true);
   const [userFound, setUserFound] = useState(false);
-  let userID;
 
-  const fetchdata = () => {
-    firebase.auth().onAuthStateChanged(async (user) => {
-      if (user) {
-        //Set user Image based on Google Image
-        setImage(user.photoURL);
-        userID = user.uid;
-        //Set user Tasks
-        await fillUserTasks();
+  const fetchdata = async () => {
+    const user = firebaseDB.getUser();
+    if (user) {
+      console.log("USER FOUND");
+      //Set user Image based on Google Image
+      setImage(user.photoURL);
+      userID = user.uid;
+      //Set user Tasks
+      fillUserTasks().then(() => {
+        fillTeamMembers().then(() => {
+          setUserFound(true);
+          setLoading(false);
+        });
+      });
 
-        //Set Team
-        await fillTeamMembers();
-
-        setUserFound(true);
-        setLoading(false);
-      } else {
-        setLoading(false);
-      }
-    });
+      //Set Team
+    } else {
+      console.log("USER NOT FOUND");
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
@@ -98,59 +100,61 @@ const Dashboard = () => {
     return <Redirect to={{ pathname: "/" }} />;
   } else {
     return (
-      <Container>
-        <Row>
-          <Col xs={12} className="d-flex align-items-center">
-            <img
-              className="img-fluid img-thumbnail taskImage"
-              src={userImage}
-              alt="userImage"
-            />
-            <h2 className="mainHeadline"> Your Tasks</h2>
-            <TaskModal reloadTasks={fillUserTasks} />
-          </Col>
-        </Row>
-        <Row className="dashTasks">
-          {tasks.map((item, idx) => {
-            return (
-              <Col xl={4} md={6} xs={12} key={idx}>
-                <Task
-                  key={idx}
-                  progress={item.data.progress}
-                  name={item.data.name}
-                />
-                {(idx + 1) % 3 === 0 && (
-                  <p key={"B" + idx} className="breaker"></p>
-                )}
-              </Col>
-            );
-          })}
-        </Row>
-        <Row className="team">
-          <h2 className="mainHeadline">Your Team</h2>
-          {team.map((item, idx) => {
-            if (item.employee) {
+      <React.Fragment>
+        <Container>
+          <Row>
+            <Col xs={12} className="d-flex align-items-center">
+              <img
+                className="img-fluid img-thumbnail taskImage"
+                src={userImage}
+                alt="userImage"
+              />
+              <h2 className="mainHeadline"> Your Tasks</h2>
+              <TaskModal reloadTasks={fillUserTasks} />
+            </Col>
+          </Row>
+          <Row className="dashTasks">
+            {tasks.map((item, idx) => {
               return (
-                <Col
-                  xl={4}
-                  md={6}
-                  xs={12}
-                  key={idx}
-                  className="employeeContainer"
-                >
-                  <Employee
-                    employee={item.employee}
+                <Col xl={4} md={6} xs={12} key={idx}>
+                  <Task
                     key={idx}
-                    task={item.currentTask}
+                    progress={item.data.progress}
+                    name={item.data.name}
                   />
+                  {(idx + 1) % 3 === 0 && (
+                    <p key={"B" + idx} className="breaker"></p>
+                  )}
                 </Col>
               );
-            } else {
-              return null;
-            }
-          })}
-        </Row>
-      </Container>
+            })}
+          </Row>
+          <Row className="team">
+            <h2 className="mainHeadline">Your Team</h2>
+            {team.map((item, idx) => {
+              if (item.employee) {
+                return (
+                  <Col
+                    xl={4}
+                    md={6}
+                    xs={12}
+                    key={idx}
+                    className="employeeContainer"
+                  >
+                    <Employee
+                      employee={item.employee}
+                      key={idx}
+                      task={item.currentTask}
+                    />
+                  </Col>
+                );
+              } else {
+                return null;
+              }
+            })}
+          </Row>
+        </Container>
+      </React.Fragment>
     );
   }
 };
