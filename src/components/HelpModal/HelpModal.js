@@ -55,8 +55,6 @@ const HelpModal = ({
     const range = rangeInput.current.value;
     const description = descriptionInput.current.value;
     if (range !== "" && description !== "") {
-      console.log(range);
-      console.log(description);
       setLoading(true);
       await firebaseDB
         .createTaskHelp(taskId, range, description)
@@ -78,7 +76,6 @@ const HelpModal = ({
 
   useEffect(() => {
     Modal.setAppElement("#root");
-    console.log("OH MY");
     if (helpNeeded) {
       setHelpText("Remove Advice Request");
     } else {

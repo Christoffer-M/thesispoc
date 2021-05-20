@@ -14,23 +14,17 @@ $color: rgba(222, 98, 98, 1);
 }
 
 .modalClass {
-  width: 50%;
   position: absolute;
   left: 50%;
-  right: auto;
-  top: 350px;
-  bottom: auto;
-  margin-right: -50%;
+  top: 50%;
   transform: translate(-50%, -50%);
   padding: 20px;
-  border-radius: 20px;
+  border-radius: 15px;
   background: #19547b;
-
-  @include media-breakpoint-down(lg) {
-    width: 100%;
-  }
-
+  z-index: 1;
+  color: #fff;
   color: white;
+
   .closeButton {
     position: absolute;
     right: 25px;
@@ -223,28 +217,5 @@ $color: rgba(222, 98, 98, 1);
       margin-top: 20px;
       color: red;
     }
-  }
-}
-
-.Overlay {
-  position: fixed;
-  top: 120px;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba($color: #fff, $alpha: 0.5);
-  transition: 0.3s;
-}
-
-@media only screen and (max-width: 992px) {
-  .modalClass {
-    position: relative;
-    top: 0px;
-    right: 0;
-    left: 0;
-    bottom: 50px;
-    transform: none;
-    margin: 5px 5px;
-    z-index: 1;
   }
 }

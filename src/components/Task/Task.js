@@ -31,8 +31,6 @@ const Task = ({ id, large, taskObject, reloadTasks }) => {
   }
 
   useEffect(() => {
-    console.log(taskObject.helpNeeded);
-    console.log("Something changed");
     Modal.setAppElement("#root");
     if (helpNeed) {
       setHelpDescription(taskObject.helpDescription);
@@ -70,7 +68,7 @@ const Task = ({ id, large, taskObject, reloadTasks }) => {
             </Col>
           </Row>
         </Modal>
-        <Container className="d-flex largeTaskContainer h-100">
+        <Container className="d-flex largeTaskContainer">
           <Row className="flex-fill">
             <Col xs={12}>
               <h3>{taskObject.name}</h3>

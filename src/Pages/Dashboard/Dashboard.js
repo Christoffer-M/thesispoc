@@ -10,35 +10,34 @@ import { Container, Row, Col } from "react-bootstrap";
 
 let userID;
 
-const Dashboard = (props) => {
+const Dashboard = () => {
   const [tasks, setTasks] = useState([]);
   const [team, setTeam] = useState([]);
   const [userImage, setImage] = useState("");
   const [loading, setLoading] = useState(true);
   const [userFound, setUserFound] = useState(false);
 
-  const fetchdata = async () => {
-    const user = firebaseDB.getUser();
-    if (user) {
-      //Set user Image based on Google Image
-      setImage(user.photoURL);
-      userID = user.uid;
-      //Set user Tasks
-      fillUserTasks().then(() => {
-        fillTeamMembers().then(() => {
-          setUserFound(true);
-          setLoading(false);
-        });
-      });
-
-      //Set Team
-    } else {
-      setLoading(false);
-    }
-  };
-
   useEffect(() => {
-    fetchdata();
+    const user = firebaseDB.getUser();
+    async function fetchData() {
+      if (user) {
+        //Set user Image based on Google Image
+        setImage(user.photoURL);
+        userID = user.uid;
+        //Set user Tasks
+        fillUserTasks().then(() => {
+          fillTeamMembers().then(() => {
+            setUserFound(true);
+            setLoading(false);
+          });
+        });
+
+        //Set Team
+      } else {
+        setLoading(false);
+      }
+    }
+    fetchData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -67,17 +66,18 @@ const Dashboard = (props) => {
   async function fillTeamMembers() {
     await firebaseDB.getEmployees().then(async (res) => {
       const currentTeam = [];
-
       for (const emp of res) {
-        let currentTaskID;
         if (emp.id !== userID) {
           if (
             emp.data.currentTask !== undefined &&
             emp.data.currentTask !== ""
           ) {
-            currentTaskID = emp.data.currentTask.trim();
-            await firebaseDB.getTask(currentTaskID).then((res) => {
-              currentTeam.push({ employee: emp.data, currentTask: res });
+            await firebaseDB.getAssignedTask(emp.id).then((res) => {
+              if (res !== undefined) {
+                currentTeam.push({ employee: emp.data, currentTask: res });
+              } else {
+                currentTeam.push({ employee: emp.data, currentTask: null });
+              }
             });
           } else {
             currentTeam.push({ employee: emp.data, currentTask: null });
@@ -104,7 +104,10 @@ const Dashboard = (props) => {
                 alt="userImage"
               />
               <h2 className="mainHeadline"> Your Tasks</h2>
-              <TaskModal reloadTasks={fillUserTasks} />
+              <TaskModal
+                reloadTasks={fillUserTasks}
+                reloadTeam={fillTeamMembers}
+              />
             </Col>
           </Row>
           <Row className="dashTasks">

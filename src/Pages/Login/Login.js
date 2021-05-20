@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from "react";
 import "./Login.scss";
-import firebase from "firebase/app";
 import * as DB from "../../database/firebaseDB";
 import React from "react";
 import BounceLoader from "react-spinners/BounceLoader";
@@ -25,15 +24,13 @@ const Login = () => {
   const passwordInput = useRef(null);
 
   useEffect(() => {
-    firebase.auth().onAuthStateChanged((user) => {
-      if (user) {
-        DB.setUser(user);
-        setPageLoading(false);
-        setUserFound(true);
-      } else {
-        setPageLoading(false);
-      }
-    });
+    const user = DB.getUser();
+    if (user) {
+      setPageLoading(false);
+      setUserFound(true);
+    } else {
+      setPageLoading(false);
+    }
   }, []);
 
   async function googleLogin() {

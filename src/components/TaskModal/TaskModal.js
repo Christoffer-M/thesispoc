@@ -17,12 +17,13 @@ const TaskModal = ({ reloadTasks }) => {
   const rangeInput = useRef(null);
   const helpDescriptionInput = useRef(null);
   const [rangeInputValue, setRangeInputValue] = useState(10);
-  let taskAssigned = firebaseDB.getUser().uid;
+  const taskAssigned = useRef(null);
 
   function afterOpenModal() {}
 
   function closeModal() {
     setErrorText("");
+    setLoading(false);
     setIsOpen(false);
     setRadioHelpNeed(false);
   }
@@ -34,16 +35,19 @@ const TaskModal = ({ reloadTasks }) => {
 
   useEffect(() => {
     Modal.setAppElement("#root");
-
-    firebaseDB.getEmployees().then((res) => {
-      const arr = [];
-      const currentUserID = firebaseDB.getUser().uid;
-      arr.push({ value: currentUserID, label: "Me" });
-      for (const emp of res) {
-        arr.push({ value: emp.id, label: emp.data.name });
-      }
-      setEmployees(arr);
-    });
+    const user = firebaseDB.getUser();
+    if (user) {
+      taskAssigned.current = user.uid;
+      firebaseDB.getEmployees().then((res) => {
+        const arr = [];
+        const currentUserID = user.uid;
+        arr.push({ value: currentUserID, label: "Me" });
+        for (const emp of res) {
+          arr.push({ value: emp.id, label: emp.data.name });
+        }
+        setEmployees(arr);
+      });
+    }
   }, []);
 
   async function createTask() {
@@ -64,13 +68,13 @@ const TaskModal = ({ reloadTasks }) => {
       .addTask(
         taskName,
         taskDescription,
-        taskAssigned,
+        taskAssigned.current,
         progress,
         radioHelpNeed,
         severity,
         helpDescription
       )
-      .then(async (val) => {
+      .then(async () => {
         closeModal();
         await reloadTasks();
         setLoading(false);
@@ -117,7 +121,7 @@ const TaskModal = ({ reloadTasks }) => {
                 <label>Task Assignee *</label>
                 <Dropdown
                   onChange={(res) => {
-                    taskAssigned = res.value;
+                    taskAssigned.current = res.value;
                   }}
                   options={employees}
                   placeholder="Select an option"

@@ -253,14 +253,14 @@ export async function getMyTasks() {
     });
 }
 
-export async function getUserTasks(id) {
+export async function getUserTasks(userID) {
   return await db
     .collection("tasks")
     .get()
     .then((ref) => {
       let arr = [];
       ref.docs.forEach((doc) => {
-        if (doc.data().assigned === id) {
+        if (doc.data().assigned === userID) {
           arr.push({ id: doc.id, data: doc.data() });
         }
       });
@@ -271,13 +271,19 @@ export async function getUserTasks(id) {
     });
 }
 
-export async function getTask(id) {
+export async function getAssignedTask(userID) {
   return await db
     .collection("tasks")
-    .doc(id)
-    .get("server")
-    .then((doc) => {
-      return doc.data();
+    .get()
+    .then((ref) => {
+      let task;
+      for (const doc of ref.docs) {
+        if (doc.data().assigned === userID) {
+          task = { id: doc.id, data: doc.data() };
+          break;
+        }
+      }
+      return task;
     });
 }
 
