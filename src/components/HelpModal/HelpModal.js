@@ -10,11 +10,10 @@ import CustomButton from "../Button/CustomButton";
 const HelpModal = ({
   helpNeeded,
   taskId,
-  setHelpTextMethod,
+  setHelpNeeded,
   setHelpDescription,
 }) => {
   const [modalIsOpen, setIsOpen] = useState(false);
-  const [helpNeed, setHelpNeed] = useState(null);
   const [helpText, setHelpText] = useState(null);
   const [errorText, setErrorText] = useState(null);
   const rangeInput = useRef(null);
@@ -22,9 +21,7 @@ const HelpModal = ({
   const [loading, setLoading] = useState(false);
   const [rangeInputValue, setRangeInputValue] = useState(10);
 
-  function afterOpenModal() {
-    console.log("Opened");
-  }
+  function afterOpenModal() {}
 
   function closeModal() {
     setErrorText(null);
@@ -58,16 +55,17 @@ const HelpModal = ({
     const range = rangeInput.current.value;
     const description = descriptionInput.current.value;
     if (range !== "" && description !== "") {
+      console.log(range);
+      console.log(description);
       setLoading(true);
       await firebaseDB
         .createTaskHelp(taskId, range, description)
         .then(() => {
-          setLoading(false);
           firebaseDB.changeHelpRequest(taskId, true);
-          setHelpText("Remove Request Help");
-          setHelpNeed("Yes");
-          setHelpTextMethod("Yes");
+          setHelpNeeded(true);
+          setHelpDescription(description);
           closeModal();
+          setLoading(false);
         })
         .catch((err) => {
           console.error(err);
@@ -80,11 +78,10 @@ const HelpModal = ({
 
   useEffect(() => {
     Modal.setAppElement("#root");
+    console.log("OH MY");
     if (helpNeeded) {
-      setHelpNeed("Yes");
-      setHelpText("Remove help Request");
+      setHelpText("Remove Advice Request");
     } else {
-      setHelpNeed("No");
       setHelpText("Request Advice");
     }
   }, [helpNeeded]);
@@ -94,11 +91,9 @@ const HelpModal = ({
       <CustomButton
         color="blue"
         onClick={async () => {
-          if (helpNeed === "Yes") {
+          if (helpNeeded) {
             firebaseDB.changeHelpRequest(taskId, false);
-            setHelpText("Request help");
-            setHelpNeed("No");
-            setHelpTextMethod("No");
+            setHelpNeeded(false);
           } else {
             openModal();
           }

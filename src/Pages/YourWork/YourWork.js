@@ -2,12 +2,10 @@ import "./YourWork.scss";
 import React, { useState, useEffect } from "react";
 import { getUserTasks, getUser } from "../../database/firebaseDB";
 import { Redirect } from "react-router";
+import { Container, Row, Col } from "react-bootstrap";
 import Task from "../../components/Task/Task";
 import TaskModal from "../../components/TaskModal/TaskModal";
 import Loading from "../Loading/Loading";
-import Container from "react-bootstrap/Container";
-import Row from "react-bootstrap/Row";
-import Col from "react-bootstrap/Col";
 
 let userID = null;
 
@@ -29,16 +27,13 @@ const YourWork = () => {
   };
 
   async function fillUserTasks() {
-    console.log(userID);
     await getUserTasks(userID).then((res) => {
       res.sort(compare);
       setTasks(res);
     });
-    console.log("Done Filling user Tasks");
   }
 
   function compare(a, b) {
-    console.log(a.data.progress);
     if (a.data.progress > b.data.progress) {
       return -1;
     }
@@ -75,10 +70,7 @@ const YourWork = () => {
                   <Task
                     large={true}
                     id={val.id}
-                    name={val.data.name}
-                    progress={val.data.progress}
-                    description={val.data.description}
-                    helpNeed={val.data.helpneeded}
+                    taskObject={val.data}
                     reloadTasks={fillUserTasks}
                     key={idx}
                   />

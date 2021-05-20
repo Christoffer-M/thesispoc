@@ -8,7 +8,7 @@ import Employee from "../../components/Employee/Employee";
 import React from "react";
 
 const YourTeam = () => {
-  const [employees, setEmployees] = useState([]);
+  const [employees, setEmployees] = useState(null);
   const [loading, setLoading] = useState(true);
   const [userFound, setUserFound] = useState(false);
 
@@ -23,8 +23,11 @@ const YourTeam = () => {
         setLoading(false);
       }
     }
-    fetchData();
-  }, []);
+    if (employees === null) {
+      fetchData();
+    }
+  }, [employees]);
+
   if (loading) {
     return <Loading />;
   } else if (!userFound) {

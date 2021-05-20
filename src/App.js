@@ -5,8 +5,7 @@ import Header from "./components/Header/Header";
 import Dashboard from "./Pages/Dashboard/Dashboard";
 import Login from "./Pages/Login/Login";
 import YourWork from "./Pages/YourWork/YourWork";
-import "bootstrap/dist/css/bootstrap.min.css";
-import Container from "react-bootstrap/Container";
+import { Container } from "react-bootstrap";
 import YourTeam from "./Pages/YourTeam/YourTeam";
 
 function App() {

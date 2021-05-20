@@ -1,14 +1,12 @@
 import * as firebaseDB from "../../database/firebaseDB";
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import "./Dashboard.scss";
 import Task from "../../components/Task/Task";
 import { Redirect } from "react-router";
 import Loading from "../Loading/Loading";
 import Employee from "../../components/Employee/Employee";
 import TaskModal from "../../components/TaskModal/TaskModal";
-import Container from "react-bootstrap/Container";
-import Row from "react-bootstrap/Row";
-import Col from "react-bootstrap/Col";
+import { Container, Row, Col } from "react-bootstrap";
 
 let userID;
 
@@ -22,7 +20,6 @@ const Dashboard = (props) => {
   const fetchdata = async () => {
     const user = firebaseDB.getUser();
     if (user) {
-      console.log("USER FOUND");
       //Set user Image based on Google Image
       setImage(user.photoURL);
       userID = user.uid;
@@ -36,7 +33,6 @@ const Dashboard = (props) => {
 
       //Set Team
     } else {
-      console.log("USER NOT FOUND");
       setLoading(false);
     }
   };
@@ -47,7 +43,6 @@ const Dashboard = (props) => {
   }, []);
 
   async function fillUserTasks() {
-    console.log("Filling user Tasks");
     await firebaseDB
       .getMyTasks()
       .then((res) => {
@@ -57,7 +52,6 @@ const Dashboard = (props) => {
       .catch((err) => {
         console.error("Could not fill user Tasks", err);
       });
-    console.log("Done Filling user Tasks");
   }
 
   function compare(a, b) {
@@ -117,11 +111,7 @@ const Dashboard = (props) => {
             {tasks.map((item, idx) => {
               return (
                 <Col xl={4} md={6} xs={12} key={idx}>
-                  <Task
-                    key={idx}
-                    progress={item.data.progress}
-                    name={item.data.name}
-                  />
+                  <Task key={idx} taskObject={item.data} />
                   {(idx + 1) % 3 === 0 && (
                     <p key={"B" + idx} className="breaker"></p>
                   )}

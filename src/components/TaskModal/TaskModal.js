@@ -15,13 +15,11 @@ const TaskModal = ({ reloadTasks }) => {
   const [errorText, setErrorText] = useState("");
   const [radioHelpNeed, setRadioHelpNeed] = useState(false);
   const rangeInput = useRef(null);
+  const helpDescriptionInput = useRef(null);
   const [rangeInputValue, setRangeInputValue] = useState(10);
   let taskAssigned = firebaseDB.getUser().uid;
 
-  function afterOpenModal() {
-    // references are now sync'd and can be accessed.
-    console.log("Opened");
-  }
+  function afterOpenModal() {}
 
   function closeModal() {
     setErrorText("");
@@ -52,15 +50,12 @@ const TaskModal = ({ reloadTasks }) => {
     setLoading(true);
     const taskName = document.getElementById("taskName").value;
     const taskDescription = document.getElementById("taskDescription").value;
-    let helpNeeded = false;
-    document.getElementsByName("helpNeeded").forEach((res) => {
-      if (res.id === "Yes" && res.checked) {
-        helpNeeded = true;
-      }
-    });
+
     let severity = null;
-    if (helpNeeded) {
+    let helpDescription = null;
+    if (radioHelpNeed) {
       severity = rangeInput.current.value;
+      helpDescription = helpDescriptionInput.current.value;
     }
 
     const progress = Math.floor(Math.random() * 101);
@@ -69,22 +64,21 @@ const TaskModal = ({ reloadTasks }) => {
       .addTask(
         taskName,
         taskDescription,
-        helpNeeded,
         taskAssigned,
+        progress,
+        radioHelpNeed,
         severity,
-        progress
+        helpDescription
       )
       .then(async (val) => {
-        console.log(val);
         closeModal();
         await reloadTasks();
+        setLoading(false);
       })
       .catch((err) => {
-        console.log("Error");
         setErrorText(err.toString());
+        setLoading(false);
       });
-
-    setLoading(false);
   }
 
   return (
@@ -206,7 +200,8 @@ const TaskModal = ({ reloadTasks }) => {
                       <input
                         placeholder="Help Description"
                         className="w-100"
-                      ></input>
+                        ref={helpDescriptionInput}
+                      />
                     </Col>
                   </Row>
                 )}

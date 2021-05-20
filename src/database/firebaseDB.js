@@ -100,15 +100,11 @@ export async function createSeverityTasks() {
 }
 
 export async function normalLogin(email, password) {
-  console.log(typeof password);
   return await firebase
     .auth()
     .signInWithEmailAndPassword(email, password)
     .then((userCredential) => {
       currentUser = userCredential.user;
-      // Signed in
-      // ...
-      console.log("SUCCESSFULLY LOGGED IN");
     })
     .catch((error) => {
       throw error;
@@ -173,7 +169,6 @@ export async function uploadPicture(file, size, type) {
     ("0" + (MyDate.getMonth() + 1)).slice(-2) +
     "" +
     MyDate.getFullYear();
-  console.log(MyDateString);
   if (type.includes("jpeg")) {
     fileType = ".jpg";
   } else {
@@ -221,7 +216,6 @@ export async function createTaskHelp(id, severity, description) {
     .doc(id)
     .update({ severity: severity, helpDescription: description })
     .then(() => {
-      console.log("Task Help succesfully created!");
       return true;
     })
     .catch((err) => {
@@ -234,10 +228,8 @@ export async function changeHelpRequest(id, bool) {
   return await db
     .collection("tasks")
     .doc(id)
-    .update({ helpneeded: bool })
-    .then(() => {
-      console.log("helpNeeded Fields sucessfully changed");
-    })
+    .update({ helpNeeded: bool })
+    .then(() => {})
     .catch((err) => {
       console.error("Error writing document: ", err);
     });
@@ -269,7 +261,6 @@ export async function getUserTasks(id) {
       let arr = [];
       ref.docs.forEach((doc) => {
         if (doc.data().assigned === id) {
-          console.log(id);
           arr.push({ id: doc.id, data: doc.data() });
         }
       });
@@ -286,7 +277,6 @@ export async function getTask(id) {
     .doc(id)
     .get("server")
     .then((doc) => {
-      console.log("returning data ");
       return doc.data();
     });
 }
@@ -325,38 +315,60 @@ export function getUserPhotoURL() {
 export async function addTask(
   name,
   description,
-  helpneeded,
   assigned,
+  progress,
+  helpNeeded,
   severity,
-  progress
+  helpDescription
 ) {
   if (
     name !== "" &&
     description !== "" &&
-    helpneeded !== undefined &&
     assigned !== null &&
     progress !== null
   ) {
-    if (severity) {
+    if (helpNeeded) {
+      if (severity && helpDescription !== "") {
+        await db
+          .collection("tasks")
+          .doc()
+          .set({
+            description: description,
+            name: name,
+            assigned: assigned,
+            progress: progress,
+            helpNeeded: helpNeeded,
+            severity: severity,
+            helpDescription: helpDescription,
+          })
+          .then(() => {
+            console.log("Document successfully written!");
+          })
+          .catch((error) => {
+            console.error("Error writing document: ", error);
+          });
+      } else {
+        console.error("ERROR");
+        throw new Error("Please fill all inputs and try again");
+      }
+    } else {
+      await db
+        .collection("tasks")
+        .doc()
+        .set({
+          description: description,
+          name: name,
+          assigned: assigned,
+          progress: progress,
+          helpNeeded: helpNeeded,
+        })
+        .then(() => {
+          console.log("Document successfully written!");
+        })
+        .catch((error) => {
+          console.error("Error writing document: ", error);
+        });
     }
-    console.log("hello there");
-    await db
-      .collection("tasks")
-      .doc()
-      .set({
-        description: description,
-        helpneeded: helpneeded,
-        name: name,
-        assigned: assigned,
-        severity: severity,
-        progress: progress,
-      })
-      .then(() => {
-        console.log("Document successfully written!");
-      })
-      .catch((error) => {
-        console.error("Error writing document: ", error);
-      });
   } else {
     console.error("ERROR");
     throw new Error("Please fill all inputs and try again");
@@ -365,15 +377,4 @@ export async function addTask(
 
 export async function deleteTask(id) {
   await db.collection("tasks").doc(id).delete();
-}
-
-class User {
-  constructor(userID, name, email, phone, title, imageURL) {
-    this.userID = userID;
-    this.name = name;
-    this.email = email;
-    this.phone = phone;
-    this.title = title;
-    this.imageURL = imageURL;
-  }
 }

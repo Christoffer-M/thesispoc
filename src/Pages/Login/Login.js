@@ -7,9 +7,7 @@ import BounceLoader from "react-spinners/BounceLoader";
 import pic from "../../assets/buttons/btn_google_signin_light_focus_web@2x.png";
 import { Redirect } from "react-router";
 import AccountCreation from "../../components/AccountCreation/AccountCreation";
-import Container from "react-bootstrap/Container";
-import Row from "react-bootstrap/Row";
-import Col from "react-bootstrap/Col";
+import { Container, Row, Col } from "react-bootstrap";
 import Loading from "../Loading/Loading";
 
 const Login = () => {
@@ -42,8 +40,6 @@ const Login = () => {
     setLoading((currentIsLoaded) => !currentIsLoaded);
     await DB.googleLogin().then((res) => {
       if (res === "success") {
-        console.log("Success");
-        console.log("Redirecting...");
         setRedirect(true);
       } else {
         console.error(res[0].code);
@@ -61,12 +57,8 @@ const Login = () => {
     } else {
       const email = emailInput.current.value.trim();
       const password = passwordInput.current.value.trim();
-      console.log(password);
       await DB.normalLogin(email, password)
         .then((res) => {
-          console.log(res);
-          console.log("Success");
-          console.log("Redirecting...");
           setRedirect(true);
         })
         .catch((err) => {
