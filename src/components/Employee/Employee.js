@@ -4,8 +4,7 @@ import React, { useEffect, useState } from "react";
 import { ReactComponent as MailIcon } from "../../assets/icons/MailIcon.svg";
 import { ReactComponent as MessageIcon } from "../../assets/icons/MessageIcon.svg";
 import { ReactComponent as PhoneIcon } from "../../assets/icons/phoneIcon.svg";
-import helpIcon from "../../assets/icons/helpIcon.webp";
-import { Container, Row, Col, Button } from "react-bootstrap";
+import { Container, Row, Col } from "react-bootstrap";
 import { getUserTasks } from "../../database/firebaseDB";
 import AdviceModal from "../AdviceModal/AdviceModal";
 
