@@ -36,10 +36,10 @@ function App() {
         {validPaths.includes(currentPath) ? <Header /> : <></>}
         <Container fluid className="appContainer">
           <Switch>
-            <Route exact path="/" component={Login}></Route>
             <Route exact path="/Dashboard" component={Dashboard}></Route>
             <Route exact path="/Work" component={YourWork}></Route>
             <Route exact path="/Team" component={YourTeam}></Route>
+            <Route exact path="/" component={Login}></Route>
           </Switch>
         </Container>
       </div>
