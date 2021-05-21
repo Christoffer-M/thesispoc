@@ -64,7 +64,7 @@ const Employee = (props) => {
 
   return (
     <Container className="mainEmployee">
-      <Row className="d-flex">
+      <Row>
         <Col xs={12} className="d-flex justify-content-between">
           <a className="contactLink" href={email}>
             <MailIcon />
@@ -79,61 +79,72 @@ const Employee = (props) => {
             </a>
           )}
         </Col>
-      </Row>
-      <Row className="employeeMeta">
-        <Col xs={4} className="d-flex imageCol justify-content-center h-100">
-          <img
-            src={emp.imageURL}
-            alt="ImageUrl"
-            className="img-fluid rounded-circle"
-          />
-        </Col>
-        <Col className="titleContainer justify-content-center" xs={8}>
-          <h4>{emp.name}</h4>
-          <h5>{emp.title} </h5>
-        </Col>
-      </Row>
-      {props.isTeamPage === true ? (
-        <Row className="progressBarContainer d-flex justify-content-center">
-          <h5>Tasks:</h5>
-          {userTasks.length > 0 ? (
-            userTasks.map((task, idx) => {
-              return (
-                <React.Fragment key={idx}>
-                  <AdviceModal
-                    large={false}
-                    task={task.data}
-                    isHelpNeeded={isHelpNeeded}
-                  />
-                </React.Fragment>
-              );
-            })
-          ) : (
-            <h6>This user has no tasks</h6>
-          )}
-        </Row>
-      ) : (
-        <Row>
-          {task !== null ? (
-            <>
-              <Col xs={12} className="currentWork">
-                <h4>Currently working on:</h4>
-                <p>{task.data.description}</p>
-                <h6>Progress:</h6>
-                <ProgressBar completed={task.data.progress} />
-              </Col>
+        <div className="d-flex employeeMeta">
+          <Col xs={4} className="d-flex imageCol justify-content-center h-100">
+            <img
+              src={emp.imageURL}
+              alt="ImageUrl"
+              className="img-fluid rounded-circle"
+            />
+          </Col>
+          <Col
+            className="titleContainer justify-content-center"
+            xs={8}
+            style={{ paddingLeft: 10 }}
+          >
+            <h4>{emp.name}</h4>
+            <h5>{emp.title} </h5>
+          </Col>
+        </div>
 
-              {helpNeeded && (
-                <Col className="helpRow">
-                  <AdviceModal large={true} task={task.data} />
-                </Col>
-              )}
-            </>
-          ) : (
-            <h4>Currently not assigned to a task</h4>
-          )}
-        </Row>
-      )}
+        {props.isTeamPage === true ? (
+          <Col className="progressBarContainer d-flex flex-column justify-content-center">
+            <h5>Tasks:</h5>
+            {userTasks.length > 0 ? (
+              userTasks.map((task, idx) => {
+                return (
+                  <React.Fragment key={idx}>
+                    <AdviceModal
+                      large={false}
+                      task={task.data}
+                      isHelpNeeded={isHelpNeeded}
+                    />
+                  </React.Fragment>
+                );
+              })
+            ) : (
+              <h6>This user has no tasks</h6>
+            )}
+          </Col>
+        ) : (
+          <div className="d-flex flex-column">
+            {task !== null ? (
+              <>
+                <div>
+                  <Col xs={12} className="currentWork">
+                    <h4>Currently working on:</h4>
+                    <p>{task.data.description}</p>
+                  </Col>
+                </div>
+                <div>
+                  <Col xs={12}>
+                    <h6>Progress:</h6>
+                    <ProgressBar completed={task.data.progress} />
+                  </Col>
+                </div>
+
+                {helpNeeded && (
+                  <Col className="helpRow">
+                    <AdviceModal large={true} task={task.data} />
+                  </Col>
+                )}
+              </>
+            ) : (
+              <h4>Currently not assigned to a task</h4>
+            )}
+          </div>
+        )}
+      </Row>
     </Container>
   );
 };
