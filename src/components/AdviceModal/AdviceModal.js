@@ -7,7 +7,7 @@ import closeButton from "../../assets/buttons/closeButton.svg";
 import CustomButton from "../Button/CustomButton";
 import ProgressBar from "../Progress-Bar/Progress-Bar";
 
-const AdviceModal = ({ large, task, idx, isHelpNeeded }) => {
+const AdviceModal = ({ large, task, isHelpNeeded }) => {
   const [modalIsOpen, setIsOpen] = useState(false);
 
   function afterOpenModal() {}
@@ -25,7 +25,7 @@ const AdviceModal = ({ large, task, idx, isHelpNeeded }) => {
   }, []);
 
   return (
-    <React.Fragment key={idx}>
+    <React.Fragment>
       {large ? (
         <Button className="btn btn-warning" onClick={openModal}>
           <img src={helpIcon} className="helpIcon" alt="helpIcon" />
