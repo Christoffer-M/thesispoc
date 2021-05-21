@@ -99,12 +99,13 @@ const Employee = (props) => {
           {userTasks.length > 0 ? (
             userTasks.map((task, idx) => {
               return (
-                <AdviceModal
-                  large={false}
-                  task={task.data}
-                  key={idx}
-                  isHelpNeeded={isHelpNeeded}
-                />
+                <React.Fragment key={idx}>
+                  <AdviceModal
+                    large={false}
+                    task={task.data}
+                    isHelpNeeded={isHelpNeeded}
+                  />
+                </React.Fragment>
               );
             })
           ) : (

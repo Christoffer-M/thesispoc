@@ -68,20 +68,13 @@ const Dashboard = () => {
       const currentTeam = [];
       for (const emp of res) {
         if (emp.id !== userID) {
-          if (
-            emp.data.currentTask !== undefined &&
-            emp.data.currentTask !== ""
-          ) {
-            await firebaseDB.getAssignedTask(emp.id).then((res) => {
-              if (res !== undefined) {
-                currentTeam.push({ employee: emp.data, currentTask: res });
-              } else {
-                currentTeam.push({ employee: emp.data, currentTask: null });
-              }
-            });
-          } else {
-            currentTeam.push({ employee: emp.data, currentTask: null });
-          }
+          await firebaseDB.getAssignedTask(emp.id).then((res) => {
+            if (res !== undefined) {
+              currentTeam.push({ employee: emp.data, currentTask: res });
+            } else {
+              currentTeam.push({ employee: emp.data, currentTask: null });
+            }
+          });
         }
       }
       setTeam(currentTeam);
