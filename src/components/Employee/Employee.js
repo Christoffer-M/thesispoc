@@ -107,6 +107,7 @@ const Employee = (props) => {
                     <AdviceModal
                       large={false}
                       task={task.data}
+                      taskID={task.id}
                       isHelpNeeded={isHelpNeeded}
                     />
                   </React.Fragment>
@@ -135,7 +136,11 @@ const Employee = (props) => {
 
                 {helpNeeded && (
                   <Col className="helpRow">
-                    <AdviceModal large={true} task={task.data} />
+                    <AdviceModal
+                      large={true}
+                      task={task.data}
+                      taskID={task.id}
+                    />
                   </Col>
                 )}
               </>

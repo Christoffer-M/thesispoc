@@ -1,5 +1,5 @@
 import "./YourWork.scss";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { getUserTasks, getUser } from "../../database/firebaseDB";
 import { Redirect } from "react-router";
 import { Container, Row, Col } from "react-bootstrap";
@@ -7,30 +7,28 @@ import Task from "../../components/Task/Task";
 import TaskModal from "../../components/TaskModal/TaskModal";
 import Loading from "../Loading/Loading";
 
-let userID = null;
-
 const YourWork = () => {
   const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [userFound, setUserFound] = useState(false);
-  const fetchdata = async () => {
-    const user = getUser();
-    if (user) {
-      userID = user.uid;
-      await fillUserTasks(user.uid).then(() => {
-        setUserFound(true);
-        setLoading(false);
-      });
-    } else {
-      setLoading(false);
-    }
-  };
+  const user = useRef(getUser());
 
   async function fillUserTasks() {
-    await getUserTasks(userID).then((res) => {
-      res.sort(compare);
-      setTasks(res);
-    });
+    if (user) {
+      setLoading(true);
+      setUserFound(true);
+      await getUserTasks(user.current.uid)
+        .then((res) => {
+          res.sort(compare);
+          setTasks(res);
+        })
+        .catch((err) => {
+          console.error(err);
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+    }
   }
 
   function compare(a, b) {
@@ -44,8 +42,27 @@ const YourWork = () => {
   }
 
   useEffect(() => {
-    fetchdata();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    const fetchdata = async () => {
+      await getUserTasks(user.current.uid)
+        .then((res) => {
+          res.sort(compare);
+          setTasks(res);
+        })
+        .catch((err) => {
+          console.error(err);
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+    };
+
+    if (user) {
+      setUserFound(true);
+      fetchdata();
+    } else {
+      setLoading(false);
+      console.error("Could not find user");
+    }
   }, []);
 
   if (loading) {

@@ -23,7 +23,6 @@ $yellowColor: #ffc107;
   cursor: pointer;
   transition: 0.5s;
   font-size: 13px;
-
   &:after {
     content: "";
     position: absolute;
@@ -36,18 +35,19 @@ $yellowColor: #ffc107;
     border-radius: 10rem;
     z-index: -2;
   }
-
-  &:before {
-    content: "";
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 0%;
-    height: 100%;
-    background-color: darken($defaultColor, 15%);
-    transition: all 0.3s;
-    border-radius: 10rem;
-    z-index: -1;
+  &:not(.loading) {
+    &:before {
+      content: "";
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 0%;
+      height: 100%;
+      background-color: darken($defaultColor, 15%);
+      transition: all 0.3s;
+      border-radius: 10rem;
+      z-index: -1;
+    }
   }
 
   &:hover {
@@ -55,6 +55,11 @@ $yellowColor: #ffc107;
     &:before {
       width: 100%;
     }
+  }
+
+  &.loading {
+    opacity: 0.5;
+    cursor: default;
   }
 
   &.blue {

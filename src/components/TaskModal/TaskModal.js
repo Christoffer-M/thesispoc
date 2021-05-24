@@ -48,6 +48,10 @@ const TaskModal = ({ reloadTasks }) => {
         setEmployees(arr);
       });
     }
+
+    return () => {
+      setEmployees([]);
+    };
   }, []);
 
   async function createTask() {

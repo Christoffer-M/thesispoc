@@ -210,6 +210,66 @@ export async function getEmployees() {
     });
 }
 
+export async function createAdviceComment(taskID, comment) {
+  const user = getUser();
+  await db
+    .collection("tasks")
+    .doc(taskID)
+    .collection("adviceCollection")
+    .doc()
+    .set({
+      comment: comment,
+      userID: user.uid,
+      userName: user.displayName,
+      userPhotoUrl: user.photoURL,
+      created: firebase.firestore.FieldValue.serverTimestamp(),
+    })
+    .then(() => {})
+    .catch((err) => {
+      throw err;
+    });
+}
+
+export async function getLoggedInUserAdviceComments(taskID) {
+  return await db
+    .collection("tasks")
+    .doc(taskID)
+    .collection("adviceCollection")
+    .get()
+    .then((res) => {
+      const arr = [];
+      for (const doc of res.docs) {
+        if (doc.data().userID === getUser().uid) {
+          arr.push(doc.data());
+        }
+      }
+      return arr;
+    });
+}
+
+export async function hasGivenAdvice(taskID) {
+  return await db
+    .collection("tasks")
+    .doc(taskID)
+    .collection("adviceCollection")
+    .get()
+    .then((sub) => {
+      if (!sub.empty) {
+        for (const doc of sub.docs) {
+          if (doc.data().userID === getUser().uid) {
+            return true;
+          }
+        }
+        return false;
+      } else {
+        return false;
+      }
+    })
+    .catch((err) => {
+      throw err;
+    });
+}
+
 export async function createTaskHelp(id, severity, description) {
   return await db
     .collection("tasks")
