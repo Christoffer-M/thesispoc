@@ -10,8 +10,10 @@ import React from "react";
 
 const Task = ({ id, large, taskObject, reloadTasks }) => {
   const [helpNeed, setHelpNeed] = useState(taskObject.helpNeeded);
-  const [helpDescriptionState, setHelpDescription] = useState("");
-  const [severity, setSeverity] = useState("");
+  const [helpDescriptionState, setHelpDescription] = useState(
+    taskObject.helpDescription
+  );
+  const [severity, setSeverity] = useState(taskObject.severity);
   const [modalIsOpen, setIsOpen] = useState(false);
 
   const deleteTask = async () => {
@@ -32,17 +34,7 @@ const Task = ({ id, large, taskObject, reloadTasks }) => {
 
   useEffect(() => {
     Modal.setAppElement("#root");
-    if (helpNeed) {
-      setHelpDescription(taskObject.helpDescription);
-      setSeverity(taskObject.severity);
-    }
-  }, [
-    helpNeed,
-    taskObject.helpDescription,
-    taskObject.helpNeed,
-    taskObject.helpNeeded,
-    taskObject.severity,
-  ]);
+  }, []);
 
   if (large) {
     return (
@@ -71,23 +63,26 @@ const Task = ({ id, large, taskObject, reloadTasks }) => {
         <Container className="d-flex largeTaskContainer">
           <Row className="flex-fill">
             <Col xs={12}>
-              <h3>{taskObject.name}</h3>
+              <h2>{taskObject.name}</h2>
             </Col>
 
             <Col xs={12}>
-              <h4>Description: </h4>
+              <h5>Description </h5>
               <p>{taskObject.description}</p>
 
               <Col className="progressRow" xs={12}>
-                <h4>Progress: </h4>
+                <h5>Progress: </h5>
                 <ProgressBar completed={taskObject.progress} />
               </Col>
               {helpNeed && (
                 <Col xs="auto">
-                  <h4>Advice requested </h4>
-                  <p>
-                    {helpDescriptionState} {severity}
-                  </p>
+                  <h5>Advice requested </h5>
+                  <div className="adviceTextContainer">
+                    <h6 className="adviceText">What do I need help with?</h6>
+                    <p>{helpDescriptionState}</p>
+                    <h6 className="adviceText">Task difficulty</h6>
+                    <p>{severity}</p>
+                  </div>
                 </Col>
               )}
             </Col>
@@ -98,6 +93,7 @@ const Task = ({ id, large, taskObject, reloadTasks }) => {
                 taskId={id}
                 setHelpNeeded={setHelpNeed}
                 setHelpDescription={setHelpDescription}
+                setSeverity={setSeverity}
               />
 
               <CustomButton

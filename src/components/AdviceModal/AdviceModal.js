@@ -38,7 +38,6 @@ const AdviceModal = ({ large, task, isHelpNeeded, taskID }) => {
       setLoading(true);
       await createAdviceComment(taskID, comment)
         .then(async () => {
-          console.log("Success");
           setHelpGiven(true);
           await getLoggedInUserAdviceComments(taskID)
             .then((res) => {
@@ -69,7 +68,6 @@ const AdviceModal = ({ large, task, isHelpNeeded, taskID }) => {
     async function fetchData() {
       await hasGivenAdvice(taskID)
         .then(async (res) => {
-          console.log(taskID);
           if (res) {
             setHelpGiven(res);
             await getLoggedInUserAdviceComments(taskID)
@@ -127,7 +125,7 @@ const AdviceModal = ({ large, task, isHelpNeeded, taskID }) => {
       <Modal
         isOpen={modalIsOpen}
         contentLabel="Give Advice"
-        className="adviceModalClass"
+        className="modalClass"
         overlayClassName="Overlay"
         onAfterOpen={afterOpenModal}
       >
@@ -185,6 +183,7 @@ const AdviceModal = ({ large, task, isHelpNeeded, taskID }) => {
                               <p>
                                 {val.created &&
                                   val.created.toDate().toLocaleDateString() +
+                                    "-" +
                                     val.created.toDate().toLocaleTimeString()}
                               </p>
                             </Col>

@@ -4,6 +4,7 @@ import { uploadPicture, createNewUser } from "../../database/firebaseDB";
 import { BounceLoader } from "react-spinners";
 import { Container, Row, Col } from "react-bootstrap";
 import ImageTools from "./ImageTools";
+import { PhoneValidator } from "phonevalidator";
 
 const AccountCreation = () => {
   const nameInput = useRef(null);
@@ -16,9 +17,10 @@ const AccountCreation = () => {
   const [showErrorText, setShowErrorText] = useState(false);
   const [errorText, setErrorText] = useState("");
   const [loading, setLoading] = useState(false);
-  let pictureBlob = null;
+  const pictureBlob = useRef();
 
   function setPicture() {
+    setLoading(true);
     //setPictureFilePath(URL.createObjectURL(fileInput.current.files[0]));
     ImageTools.resize(
       fileInput.current.files[0],
@@ -29,7 +31,8 @@ const AccountCreation = () => {
       function (blob, didItResize) {
         // didItResize will be true if it managed to resize it, otherwise false (and will return the original file as 'blob')
         setPictureFilePath(URL.createObjectURL(blob));
-        pictureBlob = blob;
+        pictureBlob.current = blob;
+        setLoading(false);
         // you can also now upload this blob using an XHR.
       }
     );
@@ -49,28 +52,36 @@ const AccountCreation = () => {
       password !== "" &&
       picture !== null
     ) {
-      const fileRef = await uploadPicture(
-        pictureBlob,
-        pictureBlob.size,
-        pictureBlob.type
-      );
-      const imageURL = await fileRef.getDownloadURL();
-      await createNewUser(name, email, phone, password, title, imageURL)
-        .then((res) => {
-          setErrorText(res);
-        })
-        .catch(async (err) => {
-          await fileRef
-            .delete()
-            .then(() => {
-              console.log("Image successfully deleted");
-            })
-            .catch((err) => {
-              console.error("Could not delete the image", err);
-            });
-          setShowErrorText(true);
-          setErrorText(err);
-        });
+      let fileRef;
+      if (pictureBlob.current) {
+        fileRef = await uploadPicture(
+          pictureBlob.current,
+          pictureBlob.current.size,
+          pictureBlob.current.type
+        );
+        const imageURL = await fileRef.getDownloadURL();
+        await createNewUser(name, email, phone, password, title, imageURL)
+          .then((res) => {
+            setErrorText(res);
+          })
+          .catch(async (err) => {
+            await fileRef
+              .delete()
+              .then(() => {
+                console.log("Image successfully deleted");
+              })
+              .catch((err) => {
+                console.error("Could not delete the image", err);
+              });
+            setShowErrorText(true);
+            setErrorText(err);
+          });
+      } else {
+        setErrorText(
+          "Picture could not be uploaded, please try another picture"
+        );
+        setShowErrorText(true);
+      }
     } else {
       setErrorText("Please fill out all the fields");
       setShowErrorText(true);
@@ -82,9 +93,6 @@ const AccountCreation = () => {
       <Row className="d-flex justify-content-center">
         <h3>Please enter the following information</h3>
         <Col md={7}>
-          <input placeholder="Full Name" ref={nameInput}></input>
-        </Col>
-        <Col md={7}>
           <input placeholder="Email" ref={emailInput} type="email"></input>
         </Col>
         <Col md={7}>
@@ -93,6 +101,9 @@ const AccountCreation = () => {
             ref={passwordInput}
             type="password"
           ></input>
+        </Col>
+        <Col md={7}>
+          <input placeholder="Full Name" ref={nameInput}></input>
         </Col>
         <Col md={7}>
           <input placeholder="Phone" ref={phoneInput} type="tel"></input>
@@ -129,15 +140,22 @@ const AccountCreation = () => {
               ref={fileInput}
               accept="image/png, image/jpeg"
               onChange={setPicture}
-              onClick={() => {
-                setLoading(true);
-              }}
             ></input>
           </Col>
         </Row>
         {showErrorText && <p className="errorText">{errorText}</p>}
-        <Col xs={12}>
+        <Col xs={12} className="d-flex flex-column">
           <button className="submit" onClick={createAccount}>
+            Create Account
+          </button>
+          <button
+            className="submit"
+            onClick={() => {
+              const test = PhoneValidator.init(phoneInput.current.value).val();
+
+              console.log(PhoneValidator.init(test).isValid());
+            }}
+          >
             Create Account
           </button>
         </Col>

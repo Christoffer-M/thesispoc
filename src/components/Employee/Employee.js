@@ -7,8 +7,10 @@ import { ReactComponent as PhoneIcon } from "../../assets/icons/phoneIcon.svg";
 import { Container, Row, Col } from "react-bootstrap";
 import { getUserTasks } from "../../database/firebaseDB";
 import AdviceModal from "../AdviceModal/AdviceModal";
+import Loading from "../../Pages/Loading/Loading";
 
 const Employee = (props) => {
+  const [loading, setLoading] = useState(true);
   const [helpNeeded, setHelp] = useState(false);
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
@@ -51,6 +53,7 @@ const Employee = (props) => {
       }
       fetchData();
     }
+    setLoading(false);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [emp.email, emp.phone, props.isTeamPage]);
 
@@ -61,97 +64,102 @@ const Employee = (props) => {
       return 12;
     }
   }
-
-  return (
-    <Container className="mainEmployee">
-      <Row>
-        <Col xs={12} className="d-flex justify-content-between">
-          <a className="contactLink" href={email}>
-            <MailIcon />
-          </a>
-
-          <p className="contactLink">
-            <MessageIcon />
-          </p>
-          {phone !== "" && (
-            <a className="contactLink" href={phone}>
-              <PhoneIcon />
+  if (loading) {
+    return <Loading />;
+  } else
+    return (
+      <Container className="mainEmployee">
+        <Row>
+          <Col xs={12} className="d-flex justify-content-between">
+            <a className="contactLink" href={email}>
+              <MailIcon />
             </a>
-          )}
-        </Col>
-        <div className="d-flex employeeMeta">
-          <Col xs={4} className="d-flex imageCol justify-content-center h-100">
-            <img
-              src={emp.imageURL}
-              alt="ImageUrl"
-              className="img-fluid rounded-circle"
-            />
-          </Col>
-          <Col
-            className="titleContainer justify-content-center"
-            xs={8}
-            style={{ paddingLeft: 10 }}
-          >
-            <h4>{emp.name}</h4>
-            <h5>{emp.title} </h5>
-          </Col>
-        </div>
 
-        {props.isTeamPage === true ? (
-          <Col className="progressBarContainer d-flex flex-column justify-content-center">
-            <h5>Tasks:</h5>
-            {userTasks.length > 0 ? (
-              userTasks.map((task, idx) => {
-                return (
-                  <React.Fragment key={idx}>
-                    <AdviceModal
-                      large={false}
-                      task={task.data}
-                      taskID={task.id}
-                      isHelpNeeded={isHelpNeeded}
-                    />
-                  </React.Fragment>
-                );
-              })
-            ) : (
-              <h6>This user has no tasks</h6>
+            <p className="contactLink">
+              <MessageIcon />
+            </p>
+            {phone !== "" && (
+              <a className="contactLink" href={phone}>
+                <PhoneIcon />
+              </a>
             )}
           </Col>
-        ) : (
-          <div className="d-flex flex-column">
-            {task !== null ? (
-              <>
-                <div>
-                  <Col xs={12} className="currentWork">
-                    <h4>Currently working on:</h4>
-                    <p>{task.data.description}</p>
-                  </Col>
-                </div>
-                <div>
-                  <Col xs={12}>
-                    <h6>Progress:</h6>
-                    <ProgressBar completed={task.data.progress} />
-                  </Col>
-                </div>
-
-                {helpNeeded && (
-                  <Col className="helpRow">
-                    <AdviceModal
-                      large={true}
-                      task={task.data}
-                      taskID={task.id}
-                    />
-                  </Col>
-                )}
-              </>
-            ) : (
-              <h4>Currently not assigned to a task</h4>
-            )}
+          <div className="d-flex employeeMeta">
+            <Col
+              xs={4}
+              className="d-flex imageCol justify-content-center h-100"
+            >
+              <img
+                src={emp.imageURL}
+                alt="ImageUrl"
+                className="img-fluid rounded-circle"
+              />
+            </Col>
+            <Col
+              className="titleContainer justify-content-center"
+              xs={8}
+              style={{ paddingLeft: 10 }}
+            >
+              <h4>{emp.name}</h4>
+              <h5>{emp.title} </h5>
+            </Col>
           </div>
-        )}
-      </Row>
-    </Container>
-  );
+
+          {props.isTeamPage === true ? (
+            <Col className="progressBarContainer d-flex flex-column justify-content-center">
+              <h5>Tasks:</h5>
+              {userTasks.length > 0 ? (
+                userTasks.map((task, idx) => {
+                  return (
+                    <React.Fragment key={idx}>
+                      <AdviceModal
+                        large={false}
+                        task={task.data}
+                        taskID={task.id}
+                        isHelpNeeded={isHelpNeeded}
+                      />
+                    </React.Fragment>
+                  );
+                })
+              ) : (
+                <h6>This user has no tasks</h6>
+              )}
+            </Col>
+          ) : (
+            <div className="d-flex flex-column">
+              {task !== null ? (
+                <>
+                  <div>
+                    <Col xs={12} className="currentWork">
+                      <h4>Currently working on:</h4>
+                      <p>{task.data.description}</p>
+                    </Col>
+                  </div>
+                  <div>
+                    <Col xs={12}>
+                      <h6>Progress:</h6>
+                      <ProgressBar completed={task.data.progress} />
+                    </Col>
+                  </div>
+
+                  {helpNeeded && (
+                    <Col className="helpRow">
+                      <AdviceModal
+                        large={true}
+                        task={task.data}
+                        taskID={task.id}
+                      />
+                    </Col>
+                  )}
+                </>
+              ) : (
+                <h4>Currently not assigned to a task</h4>
+              )}
+            </div>
+          )}
+        </Row>
+      </Container>
+    );
 };
 
 export default Employee;

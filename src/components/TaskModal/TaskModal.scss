@@ -13,210 +13,196 @@ $color: rgba(222, 98, 98, 1);
   }
 }
 
-.modalClass {
-  max-width: 750px;
+.closeButton {
   position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  padding: 20px;
-  border-radius: 15px;
-  background: #19547b;
-  z-index: 1;
-  color: #fff;
-  color: white;
+  right: 25px;
+  width: 60px;
+  cursor: pointer;
+  transition: 0.3s;
+  &:hover {
+    transform: scale(115%);
+  }
+}
 
-  .closeButton {
-    position: absolute;
-    right: 25px;
-    width: 60px;
-    cursor: pointer;
-    transition: 0.3s;
-    &:hover {
-      transform: scale(115%);
-    }
+h2 {
+  margin: 0px;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 100%;
+  font-size: 16px;
+  font-weight: 600;
+
+  label {
+    padding-left: 10px;
   }
 
-  h2 {
-    margin: 0px;
-  }
-
-  .form {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    width: 100%;
-    font-size: 16px;
-    font-weight: 600;
-
-    label {
-      padding-left: 10px;
-    }
-
-    input {
-      &:not(.form-check-input) {
-        border-radius: 30px;
-        padding: 8px;
-        padding-left: 15px;
-        margin: 10px 0px;
-        border: transparent;
-        font-size: 16px;
-        outline: 0;
-      }
-    }
-    .rangeInputContainer {
-      margin-bottom: 20px;
-      .form-range {
-        margin-top: 0px !important;
-        margin-bottom: 0px !important;
-        padding-bottom: 0px !important;
-      }
-    }
-
-    .dropDown {
-      background: white;
-      color: black;
-      position: relative;
-      cursor: pointer;
+  input {
+    &:not(.form-check-input) {
+      border-radius: 30px;
+      padding: 8px;
+      padding-left: 15px;
       margin: 10px 0px;
       border: transparent;
-      border-radius: 30px;
       font-size: 16px;
-      transition: all 0.3s ease-in-out;
-
-      .Dropdown-control {
-        position: relative;
-        z-index: 4;
-      }
-
-      .Dropdown-placeholder {
-        padding: 10px;
-      }
-
-      &:active {
-        transition: 0.3s;
-      }
-
-      .menuClass {
-        border: 1px solid black;
-        position: absolute;
-        border-radius: 20px;
-        background: white;
-        left: 0;
-        top: 0px;
-        z-index: 2;
-        transition: 0.3s;
-        overflow: hidden;
-        padding-bottom: 10px;
-        width: 100%;
-        animation-name: slideDown;
-        animation-timing-function: ease-in-out;
-        animation-duration: 0.5s;
-
-        .Dropdown-option {
-          position: relative;
-
-          padding-left: 10px;
-          margin-bottom: 10px;
-          cursor: pointer;
-          z-index: -1;
-
-          &:first-child {
-            padding-top: 50px;
-          }
-
-          &:hover {
-            background-color: lightcyan;
-            transition: 0.3s;
-          }
-        }
-      }
-
-      @keyframes slideDown {
-        0% {
-          max-height: 30px;
-        }
-        100% {
-          max-height: 15em;
-        }
-      }
+      outline: 0;
     }
+  }
+  .rangeInputContainer {
+    margin-bottom: 20px;
+    .form-range {
+      margin-top: 0px !important;
+      margin-bottom: 0px !important;
+      padding-bottom: 0px !important;
+    }
+  }
 
-    .submit {
-      margin-top: 20px;
-      display: inline-block;
-      padding: 0.75rem 1.25rem;
-      border-radius: 10rem;
-      align-self: center;
-      text-align: center;
-      width: 75%;
-      color: #fff;
-      text-transform: uppercase;
-      font-size: 1rem;
-      letter-spacing: 0.15rem;
-      transition: all 0.3s;
+  .dropDown {
+    background: white;
+    color: black;
+    position: relative;
+    cursor: pointer;
+    margin: 10px 0px;
+    border: transparent;
+    border-radius: 30px;
+    font-size: 16px;
+    transition: all 0.3s ease-in-out;
+
+    .Dropdown-control {
       position: relative;
+      z-index: 4;
+    }
+
+    .Dropdown-placeholder {
+      padding: 10px;
+    }
+
+    &:active {
+      transition: 0.3s;
+    }
+
+    .menuClass {
+      border: 1px solid black;
+      position: absolute;
+      border-radius: 20px;
+      background: white;
+      left: 0;
+      top: 0px;
+      z-index: 2;
+      transition: 0.3s;
       overflow: hidden;
-      z-index: 1;
-      border: transparent;
-      cursor: pointer;
-      transition: 0.5s;
+      padding-bottom: 10px;
+      width: 100%;
+      animation-name: slideDown;
+      animation-timing-function: ease-in-out;
+      animation-duration: 0.5s;
 
-      &:after {
-        content: "";
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-color: $color;
-        border-radius: 10rem;
-        z-index: -2;
-      }
+      .Dropdown-option {
+        position: relative;
 
-      &:before {
-        content: "";
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        width: 0%;
-        height: 100%;
-        background-color: darken($color, 15%);
-        transition: all 0.3s;
-        border-radius: 10rem;
+        padding-left: 10px;
+        margin-bottom: 10px;
+        cursor: pointer;
         z-index: -1;
-      }
 
-      &:hover {
-        color: #fff;
-        &:before {
-          width: 100%;
+        &:first-child {
+          padding-top: 50px;
+        }
+
+        &:hover {
+          background-color: lightcyan;
+          transition: 0.3s;
         }
       }
     }
 
-    .helpInputs {
+    @keyframes slideDown {
+      0% {
+        max-height: 30px;
+      }
+      100% {
+        max-height: 15em;
+      }
+    }
+  }
+
+  .submit {
+    margin-top: 20px;
+    display: inline-block;
+    padding: 0.75rem 1.25rem;
+    border-radius: 10rem;
+    align-self: center;
+    text-align: center;
+    width: 75%;
+    color: #fff;
+    text-transform: uppercase;
+    font-size: 1rem;
+    letter-spacing: 0.15rem;
+    transition: all 0.3s;
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+    border: transparent;
+    cursor: pointer;
+    transition: 0.5s;
+
+    &:after {
+      content: "";
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: $color;
+      border-radius: 10rem;
+      z-index: -2;
+    }
+
+    &:before {
+      content: "";
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 0%;
+      height: 100%;
+      background-color: darken($color, 15%);
+      transition: all 0.3s;
+      border-radius: 10rem;
+      z-index: -1;
+    }
+
+    &:hover {
+      color: #fff;
+      &:before {
+        width: 100%;
+      }
+    }
+  }
+
+  .helpInputs {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    margin-top: 10px;
+    .radioButtons {
       display: flex;
       align-items: center;
-      flex-direction: column;
-      margin-top: 10px;
-      .radioButtons {
+      flex-direction: row;
+      margin-bottom: 20px;
+      .radioButton {
         display: flex;
         align-items: center;
-        flex-direction: row;
-        margin-bottom: 20px;
-        .radioButton {
-          display: flex;
-          align-items: center;
-          margin-right: 20px;
-        }
+        margin-right: 20px;
       }
     }
+  }
 
-    .errorText {
-      align-self: center;
-      margin-top: 20px;
-      color: red;
-    }
+  .errorText {
+    align-self: center;
+    margin-top: 20px;
+    color: red;
   }
 }

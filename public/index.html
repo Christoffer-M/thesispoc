@@ -17,4 +17,12 @@
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <div id="root"></div>
   </body>
+
+  <script
+    type="text/javscript"
+    src="../node_modules/phonevalidator/phone.validator.min.js"
+  ></script>
+  <script type="text/javscript">
+    PhoneValidator.useDefaults({},{flagLink:"./node_modules/phonevalidator/flags/$1.$2"});
+  </script>
 </html>

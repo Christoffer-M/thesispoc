@@ -2,6 +2,17 @@
   margin: 120px 0px 0px 0px;
   padding: 0px !important;
 }
+.modalClass {
+  position: absolute;
+  max-width: 750px;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  padding: 20px;
+  border-radius: 15px;
+  background: #19547b;
+  color: #fff;
+}
 
 .Overlay {
   z-index: 1031;

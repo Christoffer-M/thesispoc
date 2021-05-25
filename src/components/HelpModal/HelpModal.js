@@ -12,6 +12,7 @@ const HelpModal = ({
   taskId,
   setHelpNeeded,
   setHelpDescription,
+  setSeverity,
 }) => {
   const [modalIsOpen, setIsOpen] = useState(false);
   const [helpText, setHelpText] = useState(null);
@@ -62,6 +63,7 @@ const HelpModal = ({
           firebaseDB.changeHelpRequest(taskId, true);
           setHelpNeeded(true);
           setHelpDescription(description);
+          setSeverity(range);
           closeModal();
           setLoading(false);
         })
@@ -101,7 +103,7 @@ const HelpModal = ({
       <Modal
         isOpen={modalIsOpen}
         contentLabel="Task Creation"
-        className="helpModalClass"
+        className="modalClass"
         overlayClassName="Overlay"
         onAfterOpen={afterOpenModal}
       >
