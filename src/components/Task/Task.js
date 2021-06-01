@@ -67,8 +67,7 @@ const Task = ({ id, large, taskObject, reloadTasks }) => {
             </Col>
 
             <Col xs={12}>
-              <h5>Description </h5>
-              <p>{taskObject.description}</p>
+              <p style={{ marginTop: 10 }}>{taskObject.description}</p>
 
               <Col className="progressRow" xs={12}>
                 <h5>Progress: </h5>
@@ -78,10 +77,9 @@ const Task = ({ id, large, taskObject, reloadTasks }) => {
                 <Col xs="auto">
                   <h5>Advice requested </h5>
                   <div className="adviceTextContainer">
-                    <h6 className="adviceText">What do I need help with?</h6>
                     <p>{helpDescriptionState}</p>
-                    <h6 className="adviceText">Task difficulty</h6>
-                    <p>{severity}</p>
+
+                    <h6 className="adviceText">Difficulty: {severity}</h6>
                   </div>
                 </Col>
               )}
