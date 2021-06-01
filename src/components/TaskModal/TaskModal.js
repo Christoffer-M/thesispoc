@@ -105,13 +105,13 @@ const TaskModal = ({ reloadTasks }) => {
         onAfterOpen={afterOpenModal}
       >
         <Container>
+          <img
+            src={closeButton}
+            className="closeButton"
+            onClick={closeModal}
+            alt="closeButton"
+          />
           <Row>
-            <img
-              src={closeButton}
-              className="closeButton"
-              onClick={closeModal}
-              alt="closeButton"
-            />
             <Col>
               <h2>Create a Task</h2>
               <p>Fill the inputs below to create a task</p>

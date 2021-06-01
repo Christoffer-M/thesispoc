@@ -141,6 +141,23 @@ export async function createNewUser(
     });
 }
 
+async function deleteAdviceCollection(taskID) {
+  return await axios
+    .post("https://thesis-node-api.vercel.app/api/deleteAdviceCollection", {
+      taskID: taskID,
+    })
+    .then((res) => {
+      console.log(res);
+      return "Collection sucessfully deleted";
+    })
+    .catch((err) => {
+      if (err.response) {
+        console.error(err.response.data.message);
+        throw err.response.data.message;
+      }
+    });
+}
+
 async function createEmployee(email, id, fullName, imageURL, phone, title) {
   await db
     .collection("employee")
@@ -247,6 +264,35 @@ export async function getLoggedInUserAdviceComments(taskID) {
     });
 }
 
+export async function getTaskAdviceComments(taskID) {
+  return await db
+    .collection("tasks")
+    .doc(taskID)
+    .collection("adviceCollection")
+    .get()
+    .then((res) => {
+      const arr = [];
+      for (const doc of res.docs) {
+        arr.push(doc.data());
+      }
+      return arr;
+    });
+}
+
+export async function hasAdvice(taskID) {
+  return await db
+    .collection("tasks")
+    .doc(taskID)
+    .collection("adviceCollection")
+    .get()
+    .then((res) => {
+      return res.docs.length > 0;
+    })
+    .catch((err) => {
+      throw err;
+    });
+}
+
 export async function hasGivenAdvice(taskID) {
   return await db
     .collection("tasks")
@@ -285,11 +331,21 @@ export async function createTaskHelp(id, severity, description) {
 }
 
 export async function changeHelpRequest(id, bool) {
+  if (!bool) {
+    console.log("Is false");
+    if (await hasAdvice(id)) {
+      console.log("Has Advice");
+      await deleteAdviceCollection(id);
+    }
+  }
+
   return await db
     .collection("tasks")
     .doc(id)
     .update({ helpNeeded: bool })
-    .then(() => {})
+    .then(() => {
+      return "Success!";
+    })
     .catch((err) => {
       console.error("Error writing document: ", err);
     });
@@ -442,5 +498,5 @@ export async function addTask(
 }
 
 export async function deleteTask(id) {
-  await db.collection("tasks").doc(id).delete();
+  return await db.collection("tasks").doc(id).delete();
 }

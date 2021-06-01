@@ -145,9 +145,9 @@ const AdviceModal = ({ large, task, isHelpNeeded, taskID }) => {
               <p>{task.description}</p>
               {task.helpNeeded && (
                 <>
-                  <h4>Issue Severity: {task.severity}</h4>
                   <h4>Issue Description: </h4>
                   <p>{task.helpDescription}</p>
+                  <h4>Issue Severity: {task.severity}</h4>
                 </>
               )}
             </Col>

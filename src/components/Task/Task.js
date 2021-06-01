@@ -5,6 +5,7 @@ import Modal from "react-modal";
 import "./Task.scss";
 import { Container, Row, Col } from "react-bootstrap";
 import HelpModal from "../HelpModal/HelpModal";
+import AdviceOverviewModal from "../AdviceOverviewModal/AdviceOverviewModal";
 import CustomButton from "../Button/CustomButton";
 import React from "react";
 
@@ -13,18 +14,35 @@ const Task = ({ id, large, taskObject, reloadTasks }) => {
   const [helpDescriptionState, setHelpDescription] = useState(
     taskObject.helpDescription
   );
+  const [hasAdvice, setHasAdvice] = useState(false);
   const [severity, setSeverity] = useState(taskObject.severity);
   const [modalIsOpen, setIsOpen] = useState(false);
+  const [buttonLoading, setButtonLoading] = useState(false);
+  const [deleteButtonLoading, setdeleteButtonLoading] = useState(false);
 
-  const deleteTask = async () => {
-    await firebaseDB.deleteTask(id);
-    reloadTasks();
-    setIsOpen(false);
+  const deleteTask = () => {
+    setdeleteButtonLoading(true);
+    firebaseDB
+      .deleteTask(id)
+      .then((res) => {
+        console.log(res);
+        reloadTasks();
+        setIsOpen(false);
+      })
+      .catch((err) => {
+        console.error(err);
+      })
+      .finally(() => {
+        setdeleteButtonLoading(false);
+      });
   };
 
-  function afterOpenModal() {}
+  function afterOpenModal() {
+    setButtonLoading(true);
+  }
 
   function closeModal() {
+    setButtonLoading(false);
     setIsOpen(false);
   }
 
@@ -33,8 +51,21 @@ const Task = ({ id, large, taskObject, reloadTasks }) => {
   }
 
   useEffect(() => {
+    async function fetchData() {
+      firebaseDB
+        .hasAdvice(id)
+        .then((res) => {
+          if (res) {
+            setHasAdvice(true);
+          }
+        })
+        .catch((err) => {
+          console.error(err);
+        });
+    }
+    fetchData();
     Modal.setAppElement("#root");
-  }, []);
+  }, [id]);
 
   if (large) {
     return (
@@ -49,7 +80,11 @@ const Task = ({ id, large, taskObject, reloadTasks }) => {
           <h2>Are you sure you wish to delete this task?</h2>
           <Row className="modalButtons">
             <Col xs={6}>
-              <CustomButton onClick={deleteTask} buttonText="Yes, I am sure" />
+              <CustomButton
+                onClick={deleteTask}
+                buttonText="Yes, I am sure"
+                loading={deleteButtonLoading}
+              />
             </Col>
             <Col>
               <CustomButton
@@ -86,6 +121,8 @@ const Task = ({ id, large, taskObject, reloadTasks }) => {
             </Col>
 
             <Col xs={12} className="d-flex flex-column justify-content-end">
+              {hasAdvice && helpNeed && <AdviceOverviewModal taskID={id} />}
+
               <HelpModal
                 helpNeeded={helpNeed}
                 taskId={id}
@@ -95,6 +132,7 @@ const Task = ({ id, large, taskObject, reloadTasks }) => {
               />
 
               <CustomButton
+                loading={buttonLoading}
                 onClick={openModal}
                 buttonText="Delete Task"
                 style={{ paddingTop: 8, paddingBottom: 8, marginTop: 10 }}

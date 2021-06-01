@@ -20,36 +20,37 @@ const HelpModal = ({
   const rangeInput = useRef(null);
   const descriptionInput = useRef(null);
   const [loading, setLoading] = useState(false);
+  const [modalButtonLoading, setmodalButtonLoading] = useState(false);
   const [rangeInputValue, setRangeInputValue] = useState(10);
 
   function afterOpenModal() {}
 
   function closeModal() {
     setErrorText(null);
-
+    setmodalButtonLoading(false);
     setIsOpen(false);
   }
 
   function openModal() {
+    setmodalButtonLoading(true);
     setRangeInputValue(10);
     setIsOpen(true);
   }
-  function getButtonContent() {
-    if (modalIsOpen) {
-      return (
-        <ClipLoader
-          size={16}
-          color="#ffff"
-          css={{
-            display: "inline-block",
-            alignSelf: "center",
-            justifySelf: "center",
-          }}
-        ></ClipLoader>
-      );
-    } else {
-      return helpText;
-    }
+
+  async function removeHelpRequest() {
+    setmodalButtonLoading(true);
+    await firebaseDB
+      .changeHelpRequest(taskId, false)
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((err) => {
+        console.error(err);
+      })
+      .finally(() => {
+        setmodalButtonLoading(false);
+        setHelpNeeded(false);
+      });
   }
 
   async function uploadHelpRequest() {
@@ -91,13 +92,13 @@ const HelpModal = ({
         color="blue"
         onClick={async () => {
           if (helpNeeded) {
-            firebaseDB.changeHelpRequest(taskId, false);
-            setHelpNeeded(false);
+            removeHelpRequest();
           } else {
             openModal();
           }
         }}
-        buttonText={getButtonContent()}
+        loading={modalButtonLoading}
+        buttonText={helpText}
         style={{ paddingTop: 8, paddingBottom: 8 }}
       />
       <Modal
