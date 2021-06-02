@@ -95,7 +95,7 @@ const Task = ({ id, large, taskObject, reloadTasks }) => {
             </Col>
           </Row>
         </Modal>
-        <Container className="d-flex largeTaskContainer">
+        <Container className="d-flex largeTaskContainer flex-column">
           <Row className="flex-fill">
             <Col xs={12}>
               <h2>{taskObject.name}</h2>

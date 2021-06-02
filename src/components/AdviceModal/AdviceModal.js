@@ -12,16 +12,22 @@ import {
   getLoggedInUserAdviceComments,
 } from "../../database/firebaseDB";
 import ProgressBar from "../Progress-Bar/Progress-Bar";
+import { ClipLoader } from "react-spinners";
 
 const AdviceModal = ({ large, task, isHelpNeeded, taskID }) => {
   const [modalIsOpen, setIsOpen] = useState(false);
   const [errorText, setErrorText] = useState("");
   const [loading, setLoading] = useState(false);
+  const [commentsLoading, setcommentsLoading] = useState(false);
   const [helpGiven, setHelpGiven] = useState(false);
   const [adviceElements, setadviceElements] = useState([]);
   const adviceInput = useRef(null);
 
-  function afterOpenModal() {}
+  function afterOpenModal() {
+    if (adviceElements.length === 0) {
+      updateAdviceComments();
+    }
+  }
 
   function closeModal() {
     setIsOpen(false);
@@ -29,6 +35,25 @@ const AdviceModal = ({ large, task, isHelpNeeded, taskID }) => {
 
   function openModal() {
     setIsOpen(true);
+  }
+
+  function updateAdviceComments() {
+    setcommentsLoading(true);
+    getLoggedInUserAdviceComments(taskID)
+      .then((res) => {
+        const arr = res.sort((a, b) => {
+          var dateA = new Date(a.created.toDate()),
+            dateB = new Date(b.created.toDate());
+          return dateA - dateB;
+        });
+        setadviceElements(arr);
+      })
+      .catch((err) => {
+        console.error(err);
+      })
+      .finally(() => {
+        setcommentsLoading(false);
+      });
   }
 
   async function createAdvice() {
@@ -39,24 +64,13 @@ const AdviceModal = ({ large, task, isHelpNeeded, taskID }) => {
       await createAdviceComment(taskID, comment)
         .then(async () => {
           setHelpGiven(true);
-          await getLoggedInUserAdviceComments(taskID)
-            .then((res) => {
-              const arr = res.sort((a, b) => {
-                var dateA = new Date(a.created.toDate()),
-                  dateB = new Date(b.created.toDate());
-                return dateA - dateB;
-              });
-              setadviceElements(arr);
-            })
-            .catch((err) => {
-              console.error(err);
-            });
-          closeModal();
+          updateAdviceComments();
         })
         .catch((err) => {
           console.error(err);
         })
         .finally(() => {
+          adviceInput.current.value = "";
           setLoading(false);
         });
     } else {
@@ -70,18 +84,6 @@ const AdviceModal = ({ large, task, isHelpNeeded, taskID }) => {
         .then(async (res) => {
           if (res) {
             setHelpGiven(res);
-            await getLoggedInUserAdviceComments(taskID)
-              .then((res) => {
-                const arr = res.sort((a, b) => {
-                  var dateA = new Date(a.created.toDate()),
-                    dateB = new Date(b.created.toDate());
-                  return dateA - dateB;
-                });
-                setadviceElements(arr);
-              })
-              .catch((err) => {
-                console.error(err);
-              });
           }
         })
         .catch((err) => {
@@ -90,6 +92,7 @@ const AdviceModal = ({ large, task, isHelpNeeded, taskID }) => {
     }
 
     fetchData();
+
     Modal.setAppElement("#root");
   }, [taskID]);
 
@@ -175,21 +178,27 @@ const AdviceModal = ({ large, task, isHelpNeeded, taskID }) => {
                   <React.Fragment>
                     <h4 className="adviceHeader">Previous advice from you:</h4>
                     <div className="adviceContainer">
-                      {adviceElements.map((val, idx) => {
-                        if (val) {
-                          return (
-                            <Col xs={12} key={idx} className="advice">
-                              <h6>{val.comment}</h6>
-                              <p>
-                                {val.created &&
-                                  val.created.toDate().toLocaleDateString() +
-                                    "-" +
-                                    val.created.toDate().toLocaleTimeString()}
-                              </p>
-                            </Col>
-                          );
-                        } else return <></>;
-                      })}
+                      {!commentsLoading ? (
+                        adviceElements.map((val, idx) => {
+                          if (val) {
+                            return (
+                              <Col xs={12} key={idx} className="advice">
+                                <h6>{val.comment}</h6>
+                                <p>
+                                  {val.created &&
+                                    val.created.toDate().toLocaleDateString() +
+                                      "-" +
+                                      val.created.toDate().toLocaleTimeString()}
+                                </p>
+                              </Col>
+                            );
+                          } else return <></>;
+                        })
+                      ) : (
+                        <Col className="d-flex justify-content-center">
+                          <ClipLoader color="#fff" />
+                        </Col>
+                      )}
                     </div>
                     <div></div>
                   </React.Fragment>

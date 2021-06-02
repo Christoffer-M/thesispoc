@@ -14,7 +14,7 @@ const AdviceOverviewModal = ({ taskID }) => {
   const [loading, setLoading] = useState(false);
 
   async function afterOpenModal() {
-    console.log("Getting comments");
+    setLoading(true);
     await getTaskAdviceComments(taskID)
       .then((res) => {
         if (res.length > 1) {
@@ -23,14 +23,20 @@ const AdviceOverviewModal = ({ taskID }) => {
               dateB = new Date(b.created.toDate());
             return dateA - dateB;
           });
+          console.log(arr);
           setAdvice(arr);
-          setLoading(true);
         } else {
+          console.log(res);
           setAdvice(res);
         }
       })
       .catch((err) => {
         console.error(err);
+        window.alert(err);
+        closeModal();
+      })
+      .finally(() => {
+        setLoading(false);
       });
   }
 
@@ -58,7 +64,7 @@ const AdviceOverviewModal = ({ taskID }) => {
       <Modal
         isOpen={modalIsOpen}
         contentLabel="Advice Overview"
-        className="modalClass"
+        className="modalClass adviceOverviewContainer"
         overlayClassName="Overlay"
         onAfterOpen={afterOpenModal}
       >
@@ -72,7 +78,7 @@ const AdviceOverviewModal = ({ taskID }) => {
 
           <Row className="adviceContainer">
             <h4 className="text-center">Advice from colleagues</h4>
-            {loading ? (
+            {!loading ? (
               adviceElements.map((val, idx) => {
                 if (val) {
                   return (
