@@ -1,12 +1,17 @@
 import { useRef, useState } from "react";
 import "./AccountCreation.scss";
-import { uploadPicture, createNewUser } from "../../database/firebaseDB";
+import {
+  uploadPicture,
+  createNewUser,
+  normalLogin,
+} from "../../database/firebaseDB";
 import { BounceLoader } from "react-spinners";
 import { Container, Row, Col } from "react-bootstrap";
 import ImageTools from "./ImageTools";
 import { PhoneValidator } from "phonevalidator";
+import CustomButton from "../Button/CustomButton";
 
-const AccountCreation = () => {
+const AccountCreation = ({ redirect }) => {
   const nameInput = useRef(null);
   const emailInput = useRef(null);
   const phoneInput = useRef(null);
@@ -17,6 +22,7 @@ const AccountCreation = () => {
   const [showErrorText, setShowErrorText] = useState(false);
   const [errorText, setErrorText] = useState("");
   const [loading, setLoading] = useState(false);
+  const [buttonLoading, setButtonLoading] = useState(false);
   const pictureBlob = useRef();
 
   function setPicture() {
@@ -39,11 +45,19 @@ const AccountCreation = () => {
   }
 
   async function createAccount() {
+    setButtonLoading(true);
     const name = nameInput.current.value;
     const email = emailInput.current.value;
-    const phone = phoneInput.current.value;
+    let phone = phoneInput.current.value;
     const password = passwordInput.current.value;
     const title = titleInput.current.value;
+
+    const regex1 = /((\(?45|\+45\)?)?)/;
+    // eslint-disable-next-line no-useless-escape
+    if (phone.match(regex1)[0] === "") {
+      const code = "+45";
+      phone = code.concat(phone);
+    }
     if (
       name !== "" &&
       email !== "" &&
@@ -52,39 +66,61 @@ const AccountCreation = () => {
       password !== "" &&
       picture !== null
     ) {
-      let fileRef;
-      if (pictureBlob.current) {
-        fileRef = await uploadPicture(
-          pictureBlob.current,
-          pictureBlob.current.size,
-          pictureBlob.current.type
-        );
-        const imageURL = await fileRef.getDownloadURL();
-        await createNewUser(name, email, phone, password, title, imageURL)
-          .then((res) => {
-            setErrorText(res);
-          })
-          .catch(async (err) => {
-            await fileRef
-              .delete()
-              .then(() => {
-                console.log("Image successfully deleted");
-              })
-              .catch((err) => {
-                console.error("Could not delete the image", err);
-              });
-            setShowErrorText(true);
-            setErrorText(err);
-          });
+      const regex = /^((\(?\+45\)?)?)(\s?\d{2}\s?\d{2}\s?\d{2}\s?\d{2})$/;
+      if (phone.match(regex)) {
+        phone = PhoneValidator.init(phone).val();
+        let fileRef;
+        if (pictureBlob.current) {
+          fileRef = await uploadPicture(
+            pictureBlob.current,
+            pictureBlob.current.size,
+            pictureBlob.current.type
+          );
+          const imageURL = await fileRef.getDownloadURL();
+          await createNewUser(name, email, phone, password, title, imageURL)
+            .then(() => {
+              console.log("SUCCESS");
+              setErrorText("Success! Redirecting...");
+              normalLogin(email, password)
+                .then(() => {
+                  console.log("redirecting.");
+                  redirect();
+                })
+                .catch((err) => {
+                  throw err;
+                });
+            })
+            .catch(async (err) => {
+              await fileRef
+                .delete()
+                .then(() => {
+                  console.log("Image successfully deleted");
+                })
+                .catch((err) => {
+                  console.error("Could not delete the image", err);
+                });
+              setShowErrorText(true);
+              setErrorText(err);
+            })
+            .finally(() => {
+              setButtonLoading(false);
+            });
+        } else {
+          setErrorText(
+            "Picture could not be uploaded, please try another picture"
+          );
+          setShowErrorText(true);
+          setButtonLoading(false);
+        }
       } else {
-        setErrorText(
-          "Picture could not be uploaded, please try another picture"
-        );
+        setErrorText("Phone number is not a valid Danish number");
         setShowErrorText(true);
+        setButtonLoading(false);
       }
     } else {
       setErrorText("Please fill out all the fields");
       setShowErrorText(true);
+      setButtonLoading(false);
     }
   }
 
@@ -127,7 +163,7 @@ const AccountCreation = () => {
               <BounceLoader color={"#185a9d"} css="display: block;" />
             </Col>
           )}
-          <Col xs={12}>
+          <Col md={4}>
             <label htmlFor="file-upload" className="custom-file-upload">
               {picture === null ? "Upload Picture" : "Upload new picture"}
             </label>
@@ -144,20 +180,13 @@ const AccountCreation = () => {
           </Col>
         </Row>
         {showErrorText && <p className="errorText">{errorText}</p>}
-        <Col xs={12} className="d-flex flex-column">
-          <button className="submit" onClick={createAccount}>
-            Create Account
-          </button>
-          <button
+        <Col md={4} className="d-flex flex-column">
+          <CustomButton
             className="submit"
-            onClick={() => {
-              const test = PhoneValidator.init(phoneInput.current.value).val();
-
-              console.log(PhoneValidator.init(test).isValid());
-            }}
-          >
-            Create Account
-          </button>
+            buttonText="Create Account"
+            onClick={createAccount}
+            loading={buttonLoading}
+          />
         </Col>
       </Row>
     </Container>

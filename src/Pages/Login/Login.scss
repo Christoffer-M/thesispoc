@@ -36,7 +36,7 @@
         padding: 8px;
         padding-left: 15px;
         margin: 10px 0px;
-        width: 300px;
+        width: 100%;
         border: transparent;
         font-size: 16px;
         outline: 0;
@@ -58,7 +58,6 @@
 
     .errorText {
       color: orange;
-      line-height: 10px;
       text-align: center;
       margin-top: 20px;
     }
